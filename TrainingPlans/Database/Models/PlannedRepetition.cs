@@ -1,5 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using TrainingPlans.Common;
 using TrainingPlans.Database.AdditionalData;
+using TrainingPlans.ViewModels;
 
 namespace TrainingPlans.Database.Models
 {
@@ -14,5 +17,21 @@ namespace TrainingPlans.Database.Models
         public string Notes { get; set; }
         public int Quantity { get; set; } = 1;
         public PlannedWorkout PlannedWorkout { get; set; }
+        public PlannedRepetition(PlannedRepetitionVM viewModel)
+        {
+            Id = viewModel.Id;
+            DistanceQuantity = viewModel.DistanceQuantity;
+            DistanceUom = viewModel.DistanceUom is null ? null 
+                : (DistanceUom?)viewModel.DistanceUom.ValidateEnum<DistanceUom>();
+            TimeQuantity = viewModel.TimeQuantity;
+            TimeUom = viewModel.TimeUom is null ? null
+                : (TimeUom?)viewModel.TimeUom.ValidateEnum<TimeUom>();
+            Notes = viewModel.Notes;
+            Quantity = viewModel.Quantity;
+        }
+        public PlannedRepetition()
+        {
+
+        }
     }
 }

@@ -7,10 +7,10 @@ using TrainingPlans.Database;
 
 namespace TrainingPlans.Repositories
 {
-    public class EntityRepositoryBase<T> : IEntityRepository<T> where T : class
+    public abstract class AbstractEntityRepositoryBase<T> : IEntityRepository<T> where T : class
     {
         protected readonly DbContext _dbContext;
-        public EntityRepositoryBase(TrainingPlanDbContext dbContext)
+        public AbstractEntityRepositoryBase(DbContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -23,6 +23,11 @@ namespace TrainingPlans.Repositories
         public async virtual Task<T> Get(int id)
         {
             return await _dbContext.FindAsync<T>(id);
+        }
+
+        public async virtual Task<IReadOnlyList<T>> GetAll()
+        {
+            return await _dbContext.Set<T>().ToListAsync();
         }
     }
 }

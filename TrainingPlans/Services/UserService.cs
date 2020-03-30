@@ -9,8 +9,8 @@ namespace TrainingPlans.Services
 {
     public class UserService : IUserService
     {
-        private readonly IEntityRepository<User> _userRepository;
-        public UserService(IEntityRepository<User> userRepository)
+        private readonly IUserRepository _userRepository;
+        public UserService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }

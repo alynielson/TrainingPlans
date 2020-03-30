@@ -8,11 +8,11 @@ namespace TrainingPlans
 {
     public class RestException : Exception
     {
-        public RestException(string message, HttpStatusCode errorCode) : base(message)
+        public RestException(HttpStatusCode statusCode, string message) : base(message) 
         {
-            ErrorCode = errorCode;
+            StatusCode = StatusCode;
         }
 
-        public HttpStatusCode ErrorCode { get; set; }
+        public HttpStatusCode StatusCode { get; set; }
     }
 }

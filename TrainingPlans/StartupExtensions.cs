@@ -21,12 +21,14 @@ namespace TrainingPlans
 
         public static void InjectRepositories(this IServiceCollection services)
         {
-            services.AddTransient(typeof(IEntityRepository<>), typeof(EntityRepositoryBase<>));
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IPlannedWorkoutRepository, PlannedWorkoutRepository>();
         }
 
         public static void InjectServices(this IServiceCollection services)
         {
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IPlannedWorkoutService, PlannedWorkoutService>();
         }
     }
 }
