@@ -23,33 +23,19 @@ namespace TrainingPlans.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            try
-            {
-                var result = await _userService.Find(id);
+            var result = await _userService.Find(id);
 
-                if (result is null)
-                    return NotFound();
+            if (result is null)
+                return NotFound();
 
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok(result);
         }
 
         [HttpPost("")]
         public async Task<IActionResult> Post([FromBody] User user)
         {
-            try
-            {
-                var result = await _userService.Create(user);
-                return Ok(result);
-            } 
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var result = await _userService.Create(user);
+            return Ok(result);
         }
     }
 }

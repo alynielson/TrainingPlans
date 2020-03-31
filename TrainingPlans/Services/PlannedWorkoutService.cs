@@ -6,6 +6,7 @@ using TrainingPlans.Common;
 using TrainingPlans.Database.Models;
 using TrainingPlans.Repositories;
 using TrainingPlans.ViewModels;
+using TrainingPlans.ExceptionHandling;
 
 namespace TrainingPlans.Services
 {

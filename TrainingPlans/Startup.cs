@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TrainingPlans.ExceptionHandling;
 using Microsoft.Extensions.Logging;
 using TrainingPlans.Database;
 using TrainingPlans.Database.Models;
@@ -40,16 +41,16 @@ namespace TrainingPlans
             {
                 options.Filters.Add(typeof(ValidatorActionFilter));
             }).AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = ctx => new ValidationErrorResult();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
             app.UseHttpsRedirection();
             app.UseRouting();
 
@@ -59,6 +60,9 @@ namespace TrainingPlans
             {
                 endpoints.MapControllers();
             });
+
+            app.UseExceptionHandler();
+            app.UseMiddleware<CustomExceptionHandlingMiddleware>();
         }
     }
 }

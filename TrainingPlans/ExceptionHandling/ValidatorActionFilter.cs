@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TrainingPlans
+namespace TrainingPlans.ExceptionHandling
 {
     public class ValidatorActionFilter : IActionFilter
     {
