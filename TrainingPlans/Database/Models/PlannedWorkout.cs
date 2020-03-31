@@ -36,7 +36,7 @@ namespace TrainingPlans.Database.Models
             Order = viewModel.Order;
             ActivityType = viewModel.ActivityType.ValidateEnum<ActivityType>();
             WorkoutType = viewModel.WorkoutType.ValidateEnum<WorkoutType>();
-            PlannedRepetitions = viewModel.PlannedRepetitions.Select(x => new PlannedRepetition(x)).ToList();
+            PlannedRepetitions = viewModel.PlannedRepetitions?.Select(x => new PlannedRepetition(x)).ToList();
         }
     }
 }
