@@ -10,7 +10,7 @@ namespace TrainingPlans.ExceptionHandling
     {
         public RestException(HttpStatusCode statusCode, string message) : base(message) 
         {
-            StatusCode = StatusCode;
+            StatusCode = statusCode;
         }
 
         public HttpStatusCode StatusCode { get; set; }

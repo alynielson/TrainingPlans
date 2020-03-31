@@ -31,11 +31,11 @@ namespace TrainingPlans.Database.Models
         {
             Id = viewModel.Id;
             Name = viewModel.Name;
-            TimeOfDay = viewModel.TimeOfDay is null ? TimeOfDay.Any : viewModel.TimeOfDay.ValidateEnum<TimeOfDay>();
-            ScheduledDate = viewModel.ScheduledDate.ValidateDate();
+            TimeOfDay = viewModel.TimeOfDay is null ? TimeOfDay.Any : Enum.Parse<TimeOfDay>(viewModel.TimeOfDay);
+            ScheduledDate = DateTime.Parse(viewModel.ScheduledDate);
             Order = viewModel.Order;
-            ActivityType = viewModel.ActivityType.ValidateEnum<ActivityType>();
-            WorkoutType = viewModel.WorkoutType.ValidateEnum<WorkoutType>();
+            ActivityType = Enum.Parse<ActivityType>(viewModel.ActivityType);
+            WorkoutType = Enum.Parse<WorkoutType>(viewModel.WorkoutType);
             PlannedRepetitions = viewModel.PlannedRepetitions?.Select(x => new PlannedRepetition(x)).ToList();
         }
     }

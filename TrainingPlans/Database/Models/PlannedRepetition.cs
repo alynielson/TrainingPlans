@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using TrainingPlans.Common;
 using TrainingPlans.Database.AdditionalData;
@@ -22,10 +23,10 @@ namespace TrainingPlans.Database.Models
             Id = viewModel.Id;
             DistanceQuantity = viewModel.DistanceQuantity;
             DistanceUom = viewModel.DistanceUom is null ? null 
-                : (DistanceUom?)viewModel.DistanceUom.ValidateEnum<DistanceUom>();
+                : (DistanceUom?)Enum.Parse<DistanceUom>(viewModel.DistanceUom); ;
             TimeQuantity = viewModel.TimeQuantity;
             TimeUom = viewModel.TimeUom is null ? null
-                : (TimeUom?)viewModel.TimeUom.ValidateEnum<TimeUom>();
+                : (TimeUom?)Enum.Parse<TimeUom>(viewModel.TimeUom);
             Notes = viewModel.Notes;
             Quantity = viewModel.Quantity;
         }

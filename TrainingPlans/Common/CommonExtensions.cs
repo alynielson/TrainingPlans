@@ -19,15 +19,6 @@ namespace TrainingPlans.Common
             throw new RestException(System.Net.HttpStatusCode.BadRequest, "Invalid date format.");
         }
 
-        public static T ValidateEnum<T>(this string activityString) where T : struct, IConvertible
-        {
-            if (Enum.TryParse<T>(activityString, out T activityType))
-            {
-                return activityType;
-            }
-            throw new RestException(System.Net.HttpStatusCode.BadRequest, $"Invalid value for {typeof(T)}.");
-        }
-
         public static string ToJsonString<T>(this T value, JsonSerializerSettings settings = null)
         {
             return JsonConvert.SerializeObject(value, typeof(T), settings);

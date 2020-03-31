@@ -33,21 +33,28 @@ namespace TrainingPlans.ExceptionHandling
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
-            string message = "Internal Server Error";
+            List<string> messages;
 
             if (exception.GetType() == typeof(RestException))
             {
                 var restException = (RestException)exception;
                 context.Response.StatusCode = (int)restException.StatusCode;
-                message = restException.Message;
+                messages = new List<string> { restException.Message };
+            }
+            else if (exception.GetType() == typeof(InvalidModelException))
+            {
+                var modelException = (InvalidModelException)exception;
+                context.Response.StatusCode = (int)modelException.StatusCode;
+                messages = modelException.ErrorMessages.ToList();
             }
             else
             {
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                messages = new List<string> { exception.Message };
             }
 
             return context.Response.WriteAsync(
-                new ErrorDetails(message, context.Response.StatusCode).ToJsonString());
+                new ErrorResponseMessage(context.Response.StatusCode, messages).ToJsonString(), System.Text.Encoding.UTF8);
         }
     }
 }

@@ -18,7 +18,10 @@ using TrainingPlans.Database.Models;
 using TrainingPlans.Repositories;
 using TrainingPlans.Services;
 using TrainingPlans.ViewModels.Validators;
-
+using TrainingPlans.ViewModels;
+using FluentValidation;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 namespace TrainingPlans
 {
     public class Startup
@@ -35,24 +38,24 @@ namespace TrainingPlans
         {
             services.ConfigureDatabaseServices(Configuration);
 
-            services.AddTransient<IValidatorInterceptor, CustomValidatorInterceptor>();
+            services.AddTransient<ICustomValidator<PlannedWorkoutVM>, PlannedWorkoutVMValidator>();
             services.InjectRepositories();
             services.InjectServices();
-
             services.AddControllers(options =>
             {
-            }).AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMiddleware<CustomExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
             app.UseRouting();
 
             //app.UseAuthorization();
 
-            app.UseMiddleware<CustomExceptionHandlingMiddleware>();
+           
 
             app.UseEndpoints(endpoints =>
             {

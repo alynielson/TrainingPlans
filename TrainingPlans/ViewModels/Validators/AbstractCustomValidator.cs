@@ -1,13 +1,15 @@
 ﻿using FluentValidation;
+using FluentValidation.Results;
 using FluentValidation.Validators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TrainingPlans.ExceptionHandling;
 
 namespace TrainingPlans.ViewModels.Validators
 {
-    public abstract class AbstractCustomValidator<T> : AbstractValidator<T>
+    public abstract class AbstractCustomValidator<T> : AbstractValidator<T>, ICustomValidator<T>
     {
         protected void IsEnumValue<TEnum>(string value, CustomContext context)
         {
@@ -25,6 +27,17 @@ namespace TrainingPlans.ViewModels.Validators
         protected bool BeAValidDate(string value)
         {
             return DateTime.TryParse(value, out var _);
+        }
+
+        public virtual void PerformValidation(T instance)
+        {
+            var result = base.Validate(instance);
+
+            if (!result.IsValid)
+            {
+                var messages = result.Errors?.Select(x => $"{x.PropertyName} invalid: ${x.ErrorMessage}").ToList();
+                throw new InvalidModelException(messages);
+            }
         }
     }
 }
