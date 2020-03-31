@@ -17,6 +17,7 @@ using TrainingPlans.Database;
 using TrainingPlans.Database.Models;
 using TrainingPlans.Repositories;
 using TrainingPlans.Services;
+using TrainingPlans.ViewModels.Validators;
 
 namespace TrainingPlans
 {
@@ -34,18 +35,13 @@ namespace TrainingPlans
         {
             services.ConfigureDatabaseServices(Configuration);
 
+            services.AddTransient<IValidatorInterceptor, CustomValidatorInterceptor>();
             services.InjectRepositories();
             services.InjectServices();
 
             services.AddControllers(options =>
             {
-                options.Filters.Add(typeof(ValidatorActionFilter));
             }).AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());
-
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.InvalidModelStateResponseFactory = ctx => new ValidationErrorResult();
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,13 +52,12 @@ namespace TrainingPlans
 
             //app.UseAuthorization();
 
+            app.UseMiddleware<CustomExceptionHandlingMiddleware>();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
-
-            app.UseExceptionHandler();
-            app.UseMiddleware<CustomExceptionHandlingMiddleware>();
         }
     }
 }

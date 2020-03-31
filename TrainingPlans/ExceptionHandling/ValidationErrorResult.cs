@@ -17,10 +17,7 @@ namespace TrainingPlans.ExceptionHandling
                 .Select(x => x?.ErrorMessage)
                 .Where(x => !(x is null)).ToList();
 
-            var problemDetails = new ErrorDetails(errors, 400);
-
-            context.HttpContext.Response.WriteAsync(problemDetails.ToJsonString<ErrorDetails>());
-            return Task.CompletedTask;
+            throw new RestException(System.Net.HttpStatusCode.BadRequest, "test");
         }
     }
 }
