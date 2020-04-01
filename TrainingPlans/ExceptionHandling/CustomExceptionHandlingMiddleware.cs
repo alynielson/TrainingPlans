@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,28 +34,42 @@ namespace TrainingPlans.ExceptionHandling
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
-            List<string> messages;
+            ProblemDetails result;
 
             if (exception.GetType() == typeof(RestException))
             {
                 var restException = (RestException)exception;
                 context.Response.StatusCode = (int)restException.StatusCode;
-                messages = new List<string> { restException.Message };
+                result = new ProblemDetails
+                {
+                    Detail = restException.Message,
+                    Status = context.Response.StatusCode,
+                    Title = "There was an error in the request."
+                };
             }
             else if (exception.GetType() == typeof(InvalidModelException))
             {
                 var modelException = (InvalidModelException)exception;
                 context.Response.StatusCode = (int)modelException.StatusCode;
-                messages = modelException.ErrorMessages.ToList();
+                result = new ValidationProblemDetails(modelException.ErrorMessages)
+                {
+                    Status = context.Response.StatusCode,
+                    Title = "One or more validation errors occurred."
+                };
             }
             else
             {
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                messages = new List<string> { exception.Message };
+                result = new ProblemDetails
+                {
+                    Detail = exception.Message,
+                    Status = context.Response.StatusCode,
+                    Title = "An internal server errror has occurred."
+                };
             }
 
             return context.Response.WriteAsync(
-                new ErrorResponseMessage(context.Response.StatusCode, messages).ToJsonString(), System.Text.Encoding.UTF8);
+              result.ToJsonString(result.GetType()), System.Text.Encoding.UTF8);
         }
     }
 }

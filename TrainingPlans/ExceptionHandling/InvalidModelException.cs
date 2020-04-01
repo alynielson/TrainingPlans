@@ -7,11 +7,11 @@ namespace TrainingPlans.ExceptionHandling
 {
     public class InvalidModelException : Exception
     {
-        public InvalidModelException(IReadOnlyList<string> messages) : base()
+        public InvalidModelException(IDictionary<string, string[]> messages) : base()
         {
             ErrorMessages = messages;
         }
-        public IReadOnlyList<string> ErrorMessages { get; }
+        public IDictionary<string, string[]> ErrorMessages { get; }
         public System.Net.HttpStatusCode StatusCode { get; } = System.Net.HttpStatusCode.BadRequest;
     }
 }

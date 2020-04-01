@@ -35,7 +35,7 @@ namespace TrainingPlans.ViewModels.Validators
 
             if (!result.IsValid)
             {
-                var messages = result.Errors?.Select(x => $"{x.PropertyName} invalid: ${x.ErrorMessage}").ToList();
+                var messages = result.Errors?.ToDictionary(x => $"{x.PropertyName}", x => new[] { $"{x.ErrorMessage}" });
                 throw new InvalidModelException(messages);
             }
         }

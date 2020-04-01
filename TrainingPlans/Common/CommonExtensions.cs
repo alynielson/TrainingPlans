@@ -23,5 +23,10 @@ namespace TrainingPlans.Common
         {
             return JsonConvert.SerializeObject(value, typeof(T), settings);
         }
+
+        public static string ToJsonString(object value, Type type, JsonSerializerSettings settings = null)
+        {
+            return JsonConvert.SerializeObject(value, type, settings);
+        }
     }
 }
