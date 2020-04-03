@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using TrainingPlans.Database.AdditionalData;
 using TrainingPlans.Database.Models;
-using System;
 using TrainingPlans.Common;
 
 namespace TrainingPlans.ViewModels
@@ -11,23 +10,25 @@ namespace TrainingPlans.ViewModels
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string TimeOfDay { get; set; }
+        public TimeOfDay? TimeOfDay { get; set; } = Database.AdditionalData.TimeOfDay.Any;
         public string ScheduledDate { get; set; }
         public int Order { get; set; }
-        public string ActivityType { get; set; }
-        public string WorkoutType { get; set; }
+        public ActivityType ActivityType { get; set; }
+        public WorkoutType WorkoutType { get; set; }
         public List<PlannedRepetitionVM> PlannedRepetitions { get; set; }
+        public string CompletedDateTime { get; set; }
 
         public PlannedWorkoutVM(PlannedWorkout model)
         {
             Id = model.Id;
             Name = model.Name;
-            TimeOfDay = model.TimeOfDay.ToString();
-            ScheduledDate = model.ScheduledDate.ToString(Constants.DateFormatString);
+            TimeOfDay = model.TimeOfDay;
+            ScheduledDate = model.ScheduledDate.ToString(Constants.DateOnlyFormatString);
             Order = model.Order;
-            ActivityType = model.ActivityType.ToString();
-            WorkoutType = model.WorkoutType.ToString();
+            ActivityType = model.ActivityType;
+            WorkoutType = model.WorkoutType;
             PlannedRepetitions = model.PlannedRepetitions?.Select(x => new PlannedRepetitionVM(x)).ToList();
+            CompletedDateTime = model.CompletedDateTime?.ToString(Constants.DateTimeOffsetFormatString);
         }
         public PlannedWorkoutVM() { }
     }

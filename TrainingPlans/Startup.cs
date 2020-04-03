@@ -22,6 +22,8 @@ using TrainingPlans.ViewModels;
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using System.Text.Json.Serialization;
+
 namespace TrainingPlans
 {
     public class Startup
@@ -43,6 +45,9 @@ namespace TrainingPlans
             services.InjectServices();
             services.AddControllers(options =>
             {
+            }).AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
         }
 

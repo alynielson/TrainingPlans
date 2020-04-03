@@ -24,18 +24,18 @@ namespace TrainingPlans.Database.Models
         [ForeignKey("AthleteId")]
         public User Athlete { get; set; }
         public List<PlannedRepetition> PlannedRepetitions { get; set; }
-
+        public DateTimeOffset? CompletedDateTime { get; set; }
         public PlannedWorkout() { }
         
         public PlannedWorkout(PlannedWorkoutVM viewModel)
         {
             Id = viewModel.Id;
             Name = viewModel.Name;
-            TimeOfDay = viewModel.TimeOfDay is null ? TimeOfDay.Any : Enum.Parse<TimeOfDay>(viewModel.TimeOfDay);
+            TimeOfDay = viewModel.TimeOfDay.HasValue ? viewModel.TimeOfDay.Value : TimeOfDay.Any;
             ScheduledDate = DateTime.Parse(viewModel.ScheduledDate);
             Order = viewModel.Order;
-            ActivityType = Enum.Parse<ActivityType>(viewModel.ActivityType);
-            WorkoutType = Enum.Parse<WorkoutType>(viewModel.WorkoutType);
+            ActivityType = viewModel.ActivityType;
+            WorkoutType = viewModel.WorkoutType;
             PlannedRepetitions = viewModel.PlannedRepetitions?.Select(x => new PlannedRepetition(x)).ToList();
         }
     }
