@@ -20,7 +20,7 @@ namespace TrainingPlans.ViewModels.Validators
                 .WithMessage("If present, must contain both quantity and unit of measure.");
             RuleFor(x => x.RestDistanceQuantity).Must((model, property) => ContainQuantityAndUnit(property, model.RestDistanceQuantity))
                 .WithMessage("If present, must contain both quantity and unit of measure.");
-            RuleFor(x => x.RestTimeQuantity).Must((model, property) => ContainQuantityAndUnit(property, model.TimeQuantity))
+            RuleFor(x => x.RestTimeQuantity).Must((model, property) => ContainQuantityAndUnit(property, model.RestTimeQuantity))
                 .WithMessage("If present, must contain both quantity and unit of measure.");
         }
         

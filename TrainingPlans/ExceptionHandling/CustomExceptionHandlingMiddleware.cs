@@ -47,16 +47,6 @@ namespace TrainingPlans.ExceptionHandling
                     Title = "There was an error in the request."
                 };
             }
-            else if (exception.GetType() == typeof(InvalidModelException))
-            {
-                var modelException = (InvalidModelException)exception;
-                context.Response.StatusCode = (int)modelException.StatusCode;
-                result = new ValidationProblemDetails(modelException.ErrorMessages)
-                {
-                    Status = context.Response.StatusCode,
-                    Title = "One or more validation errors occurred."
-                };
-            }
             else
             {
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;

@@ -40,7 +40,6 @@ namespace TrainingPlans
         {
             services.ConfigureDatabaseServices(Configuration);
 
-            services.AddTransient<ICustomValidator<PlannedWorkoutVM>, PlannedWorkoutVMValidator>();
             services.InjectRepositories();
             services.InjectServices();
             services.AddControllers(options =>
@@ -48,7 +47,8 @@ namespace TrainingPlans
             }).AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            });
+            })
+            .AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<Startup>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

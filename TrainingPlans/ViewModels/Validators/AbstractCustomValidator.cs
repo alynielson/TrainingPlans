@@ -9,19 +9,8 @@ using TrainingPlans.ExceptionHandling;
 
 namespace TrainingPlans.ViewModels.Validators
 {
-    public abstract class AbstractCustomValidator<T> : AbstractValidator<T>, ICustomValidator<T>
+    public abstract class AbstractCustomValidator<T> : AbstractValidator<T>
     {
-        public virtual void PerformValidation(T instance)
-        {
-            var result = base.Validate(instance);
-
-            if (!result.IsValid)
-            {
-                var messages = result.Errors?.ToDictionary(x => $"{x.PropertyName}", x => new[] { $"{x.ErrorMessage}" });
-                throw new InvalidModelException(messages);
-            }
-        }
-
         protected bool BeAValidDate(string value)
         {
             if (value is null) return true; // Use .NotNull() in validator before this to validate that a value is not null

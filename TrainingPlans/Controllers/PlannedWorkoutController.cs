@@ -19,17 +19,14 @@ namespace TrainingPlans.Controllers
     public class PlannedWorkoutController : ControllerBase
     {
         private readonly IPlannedWorkoutService _plannedWorkoutService;
-        private readonly ICustomValidator<PlannedWorkoutVM> _plannedWorkoutValidator;
-        public PlannedWorkoutController(IPlannedWorkoutService plannedWorkoutService, ICustomValidator<PlannedWorkoutVM> plannedWorkoutValidator)
+        public PlannedWorkoutController(IPlannedWorkoutService plannedWorkoutService)
         {
             _plannedWorkoutService = plannedWorkoutService;
-            _plannedWorkoutValidator = plannedWorkoutValidator;
         }
 
         [HttpPost("")]
         public async Task<IActionResult> CreateWorkout([FromRoute] int userId, [FromBody] PlannedWorkoutVM workout)
         {
-            _plannedWorkoutValidator.PerformValidation(workout);
             var resultId = await _plannedWorkoutService.Create(workout, userId);
             return Ok(resultId);
         }
