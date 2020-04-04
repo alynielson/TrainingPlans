@@ -3,11 +3,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using TrainingPlans.Common;
 using TrainingPlans.Database.AdditionalData;
+using TrainingPlans.Database.Interfaces;
 using TrainingPlans.ViewModels;
 
 namespace TrainingPlans.Database.Models
 {
-    public class PlannedRepetition
+    public class PlannedRepetition : IOrderable
     {
         [Key]
         public int Id { get; set; }
@@ -21,6 +22,7 @@ namespace TrainingPlans.Database.Models
         public TimeUom? RestTimeUom { get; set; }
         public string Notes { get; set; }
         public int Quantity { get; set; } = 1;
+        public int Order { get; set; }
         public PlannedWorkout PlannedWorkout { get; set; }
         public PlannedRepetition(PlannedRepetitionVM viewModel)
         {
@@ -35,6 +37,7 @@ namespace TrainingPlans.Database.Models
             RestDistanceUom = viewModel.RestDistanceUom;
             RestTimeQuantity = viewModel.RestTimeQuantity;
             RestTimeUom = viewModel.RestTimeUom;
+            Order = viewModel.Order;
         }
         public PlannedRepetition()
         {

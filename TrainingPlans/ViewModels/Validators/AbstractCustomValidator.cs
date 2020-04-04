@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TrainingPlans.Database.Interfaces;
 using TrainingPlans.ExceptionHandling;
 
 namespace TrainingPlans.ViewModels.Validators
@@ -21,6 +22,13 @@ namespace TrainingPlans.ViewModels.Validators
         {
             if (value is null) return true; // Use .NotNull() in validator before this to validate that a value is not null
             return DateTimeOffset.TryParse(value, out var _);
+        }
+
+        protected bool BeDistinct(IReadOnlyList<IOrderable> orderableCollection)
+        {
+            if (orderableCollection is null) return true;
+            var orderValues = orderableCollection.Select(x => x.Order).ToList();
+            return orderValues.Distinct().ToList().Count == orderValues.Count;
         }
     }
 }

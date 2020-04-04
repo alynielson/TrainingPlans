@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using TrainingPlans.Database.AdditionalData;
 using TrainingPlans.Database.Models;
 using TrainingPlans.Common;
+using TrainingPlans.Database.Interfaces;
 
 namespace TrainingPlans.ViewModels
 {
-    public class PlannedWorkoutVM
+    public class PlannedWorkoutVM : IOrderable
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -27,7 +28,7 @@ namespace TrainingPlans.ViewModels
             Order = model.Order;
             ActivityType = model.ActivityType;
             WorkoutType = model.WorkoutType;
-            PlannedRepetitions = model.PlannedRepetitions?.Select(x => new PlannedRepetitionVM(x)).ToList();
+            PlannedRepetitions = model.PlannedRepetitions?.Select(x => new PlannedRepetitionVM(x)).OrderBy(x => x.Order).ToList();
             CompletedDateTime = model.CompletedDateTime?.ToString(Constants.DateTimeOffsetFormatString);
         }
         public PlannedWorkoutVM() { }

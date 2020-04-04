@@ -2,10 +2,11 @@
 using TrainingPlans.Database.AdditionalData;
 using TrainingPlans.Database.Models;
 using TrainingPlans.Common;
+using TrainingPlans.Database.Interfaces;
 
 namespace TrainingPlans.ViewModels
 {
-    public class PlannedRepetitionVM
+    public class PlannedRepetitionVM : IOrderable
     {
         public int Id { get; set; }
         public double? DistanceQuantity { get; set; }
@@ -14,6 +15,7 @@ namespace TrainingPlans.ViewModels
         public TimeUom? TimeUom { get; set; }
         public string Notes { get; set; }
         public int Quantity { get; set; } = 1;
+        public int Order { get; set; }
         public string PaceMinutesPerMile { get; private set; }
         public double? RestDistanceQuantity { get; set; }
         public DistanceUom? RestDistanceUom { get; set; }
@@ -34,6 +36,7 @@ namespace TrainingPlans.ViewModels
             RestDistanceUom = model.RestDistanceUom;
             RestTimeQuantity = model.RestTimeQuantity;
             RestTimeUom = model.RestTimeUom;
+            Order = model.Order;
             SetPaces();
         }
         public PlannedRepetitionVM() { }

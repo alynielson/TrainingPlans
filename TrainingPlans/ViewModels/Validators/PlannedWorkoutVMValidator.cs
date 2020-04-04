@@ -17,7 +17,9 @@ namespace TrainingPlans.ViewModels.Validators
                 .Must(BeAValidDate).WithMessage($"Not a valid date. Requires format {Constants.DateOnlyFormatString}.");
             RuleFor(x => x.CompletedDateTime).Must(BeAValidDateTimeOffset)
                 .WithMessage($"Not a valid date. Requires format {Constants.DateTimeOffsetFormatString}.");
-            RuleForEach(x => x.PlannedRepetitions).InjectValidator((x, y) => new PlannedRepetitionVMValidator()); // TODO test this
+            RuleForEach(x => x.PlannedRepetitions).InjectValidator((x, y) => new PlannedRepetitionVMValidator());
+            RuleFor(x => x.PlannedRepetitions).Must(BeDistinct)
+                .WithMessage("Repetitions could not be put in order.");
         }
     }
 }

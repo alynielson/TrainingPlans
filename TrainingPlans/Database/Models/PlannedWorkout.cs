@@ -6,11 +6,12 @@ using System.Globalization;
 using System.Linq;
 using TrainingPlans.Common;
 using TrainingPlans.Database.AdditionalData;
+using TrainingPlans.Database.Interfaces;
 using TrainingPlans.ViewModels;
 
 namespace TrainingPlans.Database.Models
 {
-    public class PlannedWorkout
+    public class PlannedWorkout : IOrderable
     {
         [Key]
         public int Id { get; set; }
