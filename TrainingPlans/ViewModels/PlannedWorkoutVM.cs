@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TrainingPlans.Database.AdditionalData;
 using TrainingPlans.Database.Models;
 using TrainingPlans.Common;
-using TrainingPlans.Database.Interfaces;
+using TrainingPlans.Database.Contracts;
 
 namespace TrainingPlans.ViewModels
 {
@@ -17,7 +17,6 @@ namespace TrainingPlans.ViewModels
         public ActivityType ActivityType { get; set; }
         public WorkoutType WorkoutType { get; set; }
         public List<PlannedRepetitionVM> PlannedRepetitions { get; set; }
-        public string CompletedDateTime { get; set; }
 
         public PlannedWorkoutVM(PlannedWorkout model)
         {
@@ -29,7 +28,6 @@ namespace TrainingPlans.ViewModels
             ActivityType = model.ActivityType;
             WorkoutType = model.WorkoutType;
             PlannedRepetitions = model.PlannedRepetitions?.Select(x => new PlannedRepetitionVM(x)).OrderBy(x => x.Order).ToList();
-            CompletedDateTime = model.CompletedDateTime?.ToString(Constants.DateTimeOffsetFormatString);
         }
         public PlannedWorkoutVM() { }
     }

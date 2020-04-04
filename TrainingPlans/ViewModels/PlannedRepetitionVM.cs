@@ -2,7 +2,7 @@
 using TrainingPlans.Database.AdditionalData;
 using TrainingPlans.Database.Models;
 using TrainingPlans.Common;
-using TrainingPlans.Database.Interfaces;
+using TrainingPlans.Database.Contracts;
 
 namespace TrainingPlans.ViewModels
 {

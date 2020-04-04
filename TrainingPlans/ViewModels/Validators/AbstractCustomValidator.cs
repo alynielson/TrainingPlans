@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TrainingPlans.Database.Interfaces;
+using TrainingPlans.Database.Contracts;
 using TrainingPlans.ExceptionHandling;
 
 namespace TrainingPlans.ViewModels.Validators

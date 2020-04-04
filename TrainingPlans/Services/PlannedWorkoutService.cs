@@ -25,7 +25,7 @@ namespace TrainingPlans.Services
         {
             await FindUser(userId);
             var model = new PlannedWorkout(workout);
-            model.AthleteId = userId;
+            model.UserId = userId;
             return await _plannedWorkoutRepository.Create(model);
         }
 

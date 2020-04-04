@@ -15,7 +15,7 @@ namespace TrainingPlans.Repositories
 
         public async Task<IReadOnlyList<PlannedWorkout>> GetAll(int userId)
         {
-            return (await GetAll()).Where(x => x.AthleteId == userId).ToList();
+            return (await GetAll()).Where(x => x.UserId == userId).ToList();
         }
 
         public async Task<IReadOnlyList<PlannedWorkout>> FindByDateRange(int userId, DateTime from, DateTime to)

@@ -1,29 +1,20 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using TrainingPlans.Common;
 using TrainingPlans.Database.AdditionalData;
-using TrainingPlans.Database.Interfaces;
+using TrainingPlans.Database.Contracts;
 using TrainingPlans.ViewModels;
 
 namespace TrainingPlans.Database.Models
 {
-    public class PlannedRepetition : IOrderable
+    public class PlannedRepetition : AbstractRepetition
     {
-        [Key]
-        public int Id { get; set; }
-        public double? DistanceQuantity { get; set; }
-        public DistanceUom? DistanceUom { get; set; }
-        public double? TimeQuantity { get; set; }
-        public TimeUom? TimeUom { get; set; }
-        public double? RestDistanceQuantity { get; set; }
-        public DistanceUom? RestDistanceUom { get; set; }
-        public double? RestTimeQuantity { get; set; }
-        public TimeUom? RestTimeUom { get; set; }
-        public string Notes { get; set; }
         public int Quantity { get; set; } = 1;
-        public int Order { get; set; }
         public PlannedWorkout PlannedWorkout { get; set; }
+        [ForeignKey("PlannedWorkout")]
+        public int PlannedWorkoutId { get; set; }
         public PlannedRepetition(PlannedRepetitionVM viewModel)
         {
             Id = viewModel.Id;
@@ -41,7 +32,6 @@ namespace TrainingPlans.Database.Models
         }
         public PlannedRepetition()
         {
-
         }
     }
 }
