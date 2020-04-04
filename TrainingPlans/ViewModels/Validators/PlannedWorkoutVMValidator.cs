@@ -9,14 +9,14 @@ using TrainingPlans.Database.AdditionalData;
 
 namespace TrainingPlans.ViewModels.Validators
 {
-    public class PlannedWorkoutVMValidator : AbstractCustomValidator<PlannedWorkoutVM>
+    public class PlannedWorkoutVMValidator : AbstractWorkoutVMValidator<PlannedWorkoutVM>
     {
-        public PlannedWorkoutVMValidator()
+        public PlannedWorkoutVMValidator() : base()
         {
             RuleFor(x => x.ScheduledDate).NotNull()
-                .Must(BeAValidDate).WithMessage($"Not a valid date. Requires format {Constants.DateOnlyFormatString}.");
+                .Must(ValidatorHelpers.BeAValidDate).WithMessage($"Not a valid date. Requires format {Constants.DateOnlyFormatString}.");
             RuleForEach(x => x.PlannedRepetitions).InjectValidator((x, y) => new PlannedRepetitionVMValidator());
-            RuleFor(x => x.PlannedRepetitions).Must(BeDistinct)
+            RuleFor(x => x.PlannedRepetitions).Must(ValidatorHelpers.BeDistinct)
                 .WithMessage("Repetitions could not be put in order.");
         }
     }

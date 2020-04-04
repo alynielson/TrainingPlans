@@ -9,12 +9,11 @@ using TrainingPlans.Database.Models;
 
 namespace TrainingPlans.Database.Contracts
 {
-    public abstract class AbstractWorkout : IOrderable
+    public abstract class AbstractWorkout
     {
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
-        public int Order { get; set; }
         public ActivityType ActivityType { get; set; }
         public WorkoutType WorkoutType { get; set; }
         public User User { get; set; }

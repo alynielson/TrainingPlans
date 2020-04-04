@@ -11,10 +11,11 @@ using TrainingPlans.ViewModels;
 
 namespace TrainingPlans.Database.Models
 {
-    public class PlannedWorkout : AbstractWorkout
+    public class PlannedWorkout : AbstractWorkout, IOrderable
     {
         public TimeOfDay TimeOfDay { get; set; }
         public DateTime ScheduledDate { get; set; }
+        public int Order { get; set; }
         public List<PlannedRepetition> PlannedRepetitions { get; set; }
         public PlannedWorkout() { }
         public PlannedWorkout(PlannedWorkoutVM viewModel)

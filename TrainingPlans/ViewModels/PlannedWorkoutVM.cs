@@ -7,15 +7,11 @@ using TrainingPlans.Database.Contracts;
 
 namespace TrainingPlans.ViewModels
 {
-    public class PlannedWorkoutVM : IOrderable
+    public class PlannedWorkoutVM : AbstractWorkoutVM, IOrderable
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
         public TimeOfDay? TimeOfDay { get; set; } = Database.AdditionalData.TimeOfDay.Any;
         public string ScheduledDate { get; set; }
         public int Order { get; set; }
-        public ActivityType ActivityType { get; set; }
-        public WorkoutType WorkoutType { get; set; }
         public List<PlannedRepetitionVM> PlannedRepetitions { get; set; }
 
         public PlannedWorkoutVM(PlannedWorkout model)
