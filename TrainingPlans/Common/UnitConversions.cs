@@ -77,9 +77,9 @@ namespace TrainingPlans.Common
             var distanceMiles = distance.ConvertDistance(distanceUom, DistanceUom.Miles);
             var timeSeconds = time.ConvertTime(timeUom, TimeUom.Seconds);
             var secondsPerMile = timeSeconds / distanceMiles;
-            var minutesPerMileDouble = secondsPerMile / 60;
+            var minutesPerMileDouble = secondsPerMile / MinToSMultiplier;
             var minutesPerMileNoSeconds = (int)minutesPerMileDouble;
-            var leftOverSeconds = (int)(timeSeconds - secondsPerMile);
+            var leftOverSeconds = (int)((timeSeconds - minutesPerMileNoSeconds*distanceMiles)/distanceMiles);
             return $"{minutesPerMileNoSeconds}:{leftOverSeconds}";
         }
     }
