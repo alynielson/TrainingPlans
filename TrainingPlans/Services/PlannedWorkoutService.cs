@@ -23,16 +23,15 @@ namespace TrainingPlans.Services
 
         public async Task<bool> Create(PlannedWorkoutVM workout, int userId)
         {
-            await FindUser(userId);
-            var model = new PlannedWorkout(workout);
-            model.UserId = userId;
+            await Extensions.FindUser(userId, _userRepository);
+            var model = new PlannedWorkout(workout, userId);
             var entriesSaved = await _plannedWorkoutRepository.Create(model);
             return entriesSaved == (model.PlannedRepetitions.Count + 1);
         }
 
         public async Task<IReadOnlyList<PlannedWorkoutVM>> GetInDateRange(string from, string to, int userId, bool includeReps)
         {
-            var user = await FindUser(userId);
+            var user = await Extensions.FindUser(userId, _userRepository);
             var plan = await _plannedWorkoutRepository.FindByDateRange(userId, from.ValidateDate(), to.ValidateDate());
 
             var userDefaults = user.GetUserDefaultsFormatted();
@@ -42,9 +41,9 @@ namespace TrainingPlans.Services
 
         public async Task<PlannedWorkoutVM> GetSingle(int userId, int workoutId, bool includeReps)
         {
-            var user = await FindUser(userId);
-            var workout = await _plannedWorkoutRepository.GetSingle(userId, workoutId);
-            if (workout is null)
+            var user = await Extensions.FindUser(userId, _userRepository);
+            var workout = await _plannedWorkoutRepository.Get(workoutId);
+            if (workout is null || userId != workout.UserId)
                 return null;
             var defaults = user.GetUserDefaultsForActivity(workout.ActivityType);
 
@@ -53,21 +52,10 @@ namespace TrainingPlans.Services
 
         public async Task<bool?> DeleteWorkout(int userId, int workoutId)
         {
-            await FindUser(userId);
-            var entriesDeleted = await _plannedWorkoutRepository.Delete(workoutId);
+            var entriesDeleted = await _plannedWorkoutRepository.Delete(workoutId, userId);
             if (entriesDeleted is null)
                 return null;
             return entriesDeleted > 0;
-        }
-
-        private async Task<User> FindUser(int userId)
-        {
-            var user = await _userRepository.Get(userId);
-            if (user is null)
-            {
-                throw new RestException(System.Net.HttpStatusCode.NotFound, "User not found.");
-            }
-            return user;
         }
     }
 }

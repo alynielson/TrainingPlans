@@ -15,7 +15,7 @@ namespace TrainingPlans.Database.Models
         public PlannedWorkout PlannedWorkout { get; set; }
         [ForeignKey("PlannedWorkout")]
         public int PlannedWorkoutId { get; set; }
-        public PlannedRepetition(PlannedRepetitionVM viewModel)
+        public PlannedRepetition(PlannedRepetitionVM viewModel, PlannedWorkoutVM parent, int userId)
         {
             Id = viewModel.Id;
             DistanceQuantity = viewModel.DistanceQuantity;
@@ -29,6 +29,8 @@ namespace TrainingPlans.Database.Models
             RestTimeQuantity = viewModel.RestTimeQuantity;
             RestTimeUom = viewModel.RestTimeUom;
             Order = viewModel.Order;
+            ActivityType = parent.ActivityType;
+            UserId = userId;
         }
         public PlannedRepetition()
         {

@@ -19,12 +19,9 @@ namespace TrainingPlans.Repositories
             return await _dbContext.PlannedWorkout.Where(x => x.UserId == userId).Include(x => x.PlannedRepetitions).ToListAsync();
         }
 
-        public async Task<PlannedWorkout> GetSingle(int userId, int workoutId)
+        public override async Task<PlannedWorkout> Get(int workoutId)
         {
-            var result = await Get(workoutId);
-            if (result?.UserId != userId)
-                return null;
-            return result;
+            return await _dbContext.PlannedWorkout.Include(x => x.PlannedRepetitions).FirstOrDefaultAsync(x => x.Id == workoutId);
         }
 
         public async Task<IReadOnlyList<PlannedWorkout>> FindByDateRange(int userId, DateTime from, DateTime to)
@@ -32,6 +29,15 @@ namespace TrainingPlans.Repositories
             return (await GetAll(userId))
                 .Where(x => x.ScheduledDate >= from && x.ScheduledDate <= to)
                 .ToList();
+        }
+
+        public async Task<int?> Delete(int workoutId, int userId)
+        {
+            var workout = await base.Get(workoutId);
+            if (workout is null || workout.UserId != userId)
+                return null;
+            _dbContext.Remove(workout);
+            return await _dbContext.SaveChangesAsync();
         }
     }
 }

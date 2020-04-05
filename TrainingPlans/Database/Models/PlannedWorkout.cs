@@ -18,7 +18,7 @@ namespace TrainingPlans.Database.Models
         public int Order { get; set; }
         public List<PlannedRepetition> PlannedRepetitions { get; set; }
         public PlannedWorkout() { }
-        public PlannedWorkout(PlannedWorkoutVM viewModel)
+        public PlannedWorkout(PlannedWorkoutVM viewModel, int userId)
         {
             Id = viewModel.Id;
             Name = viewModel.Name;
@@ -27,7 +27,8 @@ namespace TrainingPlans.Database.Models
             Order = viewModel.Order;
             ActivityType = viewModel.ActivityType;
             WorkoutType = viewModel.WorkoutType;
-            PlannedRepetitions = viewModel.PlannedRepetitions?.Select(x => new PlannedRepetition(x)).ToList();
+            PlannedRepetitions = viewModel.PlannedRepetitions?.Select(x => new PlannedRepetition(x, viewModel, userId)).ToList();
+            UserId = userId;
         }
     }
 }

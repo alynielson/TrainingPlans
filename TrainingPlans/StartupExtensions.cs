@@ -28,6 +28,7 @@ namespace TrainingPlans
 
         public static void InjectServices(this IServiceCollection services)
         {
+            services.AddTransient<IPlannedRepetitionService, PlannedRepetitionService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IPlannedWorkoutService, PlannedWorkoutService>();
         }

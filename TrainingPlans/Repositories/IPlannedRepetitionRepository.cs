@@ -8,5 +8,7 @@ namespace TrainingPlans.Repositories
 {
     public interface IPlannedRepetitionRepository : IEntityRepository<PlannedRepetition>
     {
+        Task<int?> Delete(int repetitionId, int workoutId, int userId);
+        Task<PlannedRepetition> Get(int repetitionId, int workoutId, int userId);
     }
 }

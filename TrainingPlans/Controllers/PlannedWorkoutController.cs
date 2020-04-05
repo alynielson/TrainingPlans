@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using TrainingPlans.Database.Models;
 using TrainingPlans.Services;
-using System.Net;
 using TrainingPlans.ViewModels;
-using TrainingPlans.ExceptionHandling;
-using FluentValidation;
-using TrainingPlans.ViewModels.Validators;
 
 namespace TrainingPlans.Controllers
 {

@@ -10,6 +10,6 @@ namespace TrainingPlans.Repositories
     {
         Task<IReadOnlyList<PlannedWorkout>> FindByDateRange(int userId, DateTime from, DateTime to);
         Task<IReadOnlyList<PlannedWorkout>> GetAll(int userId);
-        Task<PlannedWorkout> GetSingle(int userId, int workoutId);
+        Task<int?> Delete(int workoutId, int userId);
     }
 }
