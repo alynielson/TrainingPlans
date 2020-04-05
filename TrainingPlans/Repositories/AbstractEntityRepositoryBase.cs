@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TrainingPlans.Database;
+using TrainingPlans.ExceptionHandling;
 
 namespace TrainingPlans.Repositories
 {
@@ -23,6 +24,17 @@ namespace TrainingPlans.Repositories
         public async virtual Task<T> Get(int id)
         {
             return await _dbContext.FindAsync<T>(id);
+        }
+
+        public async virtual Task<int?> Delete(int id)
+        {
+            var entity = await Get(id);
+            if (entity is null)
+            {
+                return null;
+            }
+            _dbContext.Remove(entity);
+            return await _dbContext.SaveChangesAsync();
         }
     }
 }

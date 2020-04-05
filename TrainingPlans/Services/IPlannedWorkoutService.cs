@@ -11,5 +11,6 @@ namespace TrainingPlans.Services
     {
         Task<bool> Create(PlannedWorkoutVM workout, int userId);
         Task<IReadOnlyList<PlannedWorkoutVM>> GetInDateRange(string from, string to, int id);
+        Task<bool?> DeleteWorkout(int userId, int workoutId);
     }
 }

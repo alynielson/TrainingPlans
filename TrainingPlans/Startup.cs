@@ -47,6 +47,7 @@ namespace TrainingPlans
             }).AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                options.JsonSerializerOptions.IgnoreNullValues = true;
             })
             .AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<Startup>());
         }

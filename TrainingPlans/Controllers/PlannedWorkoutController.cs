@@ -37,5 +37,14 @@ namespace TrainingPlans.Controllers
             var plan = await _plannedWorkoutService.GetInDateRange(from, to, userId);
             return Ok(plan);
         }
+
+        [HttpDelete("/{workoutId}")]
+        public async Task<IActionResult> DeleteWorkout([FromRoute] int userId, [FromRoute] int workoutId)
+        {
+            var result = await _plannedWorkoutService.DeleteWorkout(userId, workoutId);
+            if (result.HasValue)
+                return Ok(result);
+            return NotFound();
+        }
     }
 }

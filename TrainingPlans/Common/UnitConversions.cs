@@ -79,8 +79,8 @@ namespace TrainingPlans.Common
             var secondsPerMile = timeSeconds / distanceMiles;
             var minutesPerMileDouble = secondsPerMile / MinToSMultiplier;
             var minutesPerMileNoSeconds = (int)minutesPerMileDouble;
-            var leftOverSeconds = (int)((timeSeconds - minutesPerMileNoSeconds*distanceMiles)/distanceMiles);
-            return $"{minutesPerMileNoSeconds}:{leftOverSeconds}";
+            var leftOverSeconds = (int)((timeSeconds - minutesPerMileNoSeconds*distanceMiles*MinToSMultiplier)/distanceMiles);
+            return $"{minutesPerMileNoSeconds}:{(leftOverSeconds < 10 ? $"0{leftOverSeconds}" : $"{leftOverSeconds}")}";
         }
     }
 }

@@ -37,6 +37,15 @@ namespace TrainingPlans.Services
             return plan.OrderBy(x => x.ScheduledDate).Select(x => new PlannedWorkoutVM(x)).ToList();
         }
 
+        public async Task<bool?> DeleteWorkout(int userId, int workoutId)
+        {
+            await FindUser(userId);
+            var entriesDeleted = await _plannedWorkoutRepository.Delete(workoutId);
+            if (entriesDeleted is null)
+                return null;
+            return entriesDeleted > 0;
+        }
+
         private async Task<User> FindUser(int userId)
         {
             var user = await _userRepository.Get(userId);
