@@ -14,9 +14,10 @@ namespace TrainingPlans.Services
         {
             _userRepository = userRepository;
         }
-        public async Task<int> Create(User user)
+        public async Task<bool> Create(User user)
         {
-            return await _userRepository.Create(user);
+            var entriesSaved = await _userRepository.Create(user);
+            return entriesSaved is 1;
         }
 
         public async Task<User> Find(int id)

@@ -9,8 +9,8 @@ namespace TrainingPlans.Repositories
 {
     public abstract class AbstractEntityRepositoryBase<T> : IEntityRepository<T> where T : class
     {
-        protected readonly DbContext _dbContext;
-        public AbstractEntityRepositoryBase(DbContext dbContext)
+        protected readonly TrainingPlanDbContext _dbContext;
+        public AbstractEntityRepositoryBase(TrainingPlanDbContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -23,11 +23,6 @@ namespace TrainingPlans.Repositories
         public async virtual Task<T> Get(int id)
         {
             return await _dbContext.FindAsync<T>(id);
-        }
-
-        public async virtual Task<IReadOnlyList<T>> GetAll()
-        {
-            return await _dbContext.Set<T>().ToListAsync();
         }
     }
 }

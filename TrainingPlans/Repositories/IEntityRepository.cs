@@ -9,9 +9,6 @@ namespace TrainingPlans.Repositories
     {
         Task<int> Create(T entity);
 
-
         Task<T> Get(int id);
-
-        Task<IReadOnlyList<T>> GetAll();
     }
 }

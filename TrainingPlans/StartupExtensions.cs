@@ -22,6 +22,7 @@ namespace TrainingPlans
         public static void InjectRepositories(this IServiceCollection services)
         {
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IPlannedRepetitionRepository, PlannedRepetitionRepository>();
             services.AddTransient<IPlannedWorkoutRepository, PlannedWorkoutRepository>();
         }
 

@@ -21,12 +21,13 @@ namespace TrainingPlans.Services
             _userRepository = userRepository;
         }
 
-        public async Task<int> Create(PlannedWorkoutVM workout, int userId)
+        public async Task<bool> Create(PlannedWorkoutVM workout, int userId)
         {
             await FindUser(userId);
             var model = new PlannedWorkout(workout);
             model.UserId = userId;
-            return await _plannedWorkoutRepository.Create(model);
+            var entriesSaved = await _plannedWorkoutRepository.Create(model);
+            return entriesSaved == (model.PlannedRepetitions.Count + 1);
         }
 
         public async Task<IReadOnlyList<PlannedWorkoutVM>> GetInDateRange(string from, string to, int userId)

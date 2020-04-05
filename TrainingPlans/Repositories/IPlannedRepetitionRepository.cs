@@ -4,12 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using TrainingPlans.Database.Models;
 
-namespace TrainingPlans.Services
+namespace TrainingPlans.Repositories
 {
-    public interface IUserService
+    public interface IPlannedRepetitionRepository : IEntityRepository<PlannedRepetition>
     {
-        Task<User> Find(int id);
-
-        Task<bool> Create(User user);
     }
 }
