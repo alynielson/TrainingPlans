@@ -32,10 +32,20 @@ namespace TrainingPlans.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetWorkouts([FromRoute] int userId, [FromQuery] string from, [FromQuery] string to)
+        public async Task<IActionResult> GetWorkouts([FromRoute] int userId, [FromQuery] string from, [FromQuery] string to,
+            [FromQuery] bool includeReps = false)
         {
-            var plan = await _plannedWorkoutService.GetInDateRange(from, to, userId);
+            var plan = await _plannedWorkoutService.GetInDateRange(from, to, userId, includeReps);
             return Ok(plan);
+        }
+
+        [HttpGet("/{workoutId}")]
+        public async Task<IActionResult> GetSingle([FromRoute] int userId, [FromRoute] int workoutId, [FromQuery] bool includeReps = false)
+        {
+            var workout = await _plannedWorkoutService.GetSingle(userId, workoutId, includeReps);
+            if (workout is null)
+                return NotFound();
+            return Ok(workout);
         }
 
         [HttpDelete("/{workoutId}")]

@@ -30,11 +30,25 @@ namespace TrainingPlans.Services
             return entriesSaved == (model.PlannedRepetitions.Count + 1);
         }
 
-        public async Task<IReadOnlyList<PlannedWorkoutVM>> GetInDateRange(string from, string to, int userId)
+        public async Task<IReadOnlyList<PlannedWorkoutVM>> GetInDateRange(string from, string to, int userId, bool includeReps)
         {
-            await FindUser(userId);
+            var user = await FindUser(userId);
             var plan = await _plannedWorkoutRepository.FindByDateRange(userId, from.ValidateDate(), to.ValidateDate());
-            return plan.OrderBy(x => x.ScheduledDate).Select(x => new PlannedWorkoutVM(x)).ToList();
+
+            var userDefaults = user.GetUserDefaultsFormatted();
+
+            return plan?.OrderBy(x => x.ScheduledDate).Select(x => new PlannedWorkoutVM(x, userDefaults[x.ActivityType], includeReps)).ToList();
+        }
+
+        public async Task<PlannedWorkoutVM> GetSingle(int userId, int workoutId, bool includeReps)
+        {
+            var user = await FindUser(userId);
+            var workout = await _plannedWorkoutRepository.GetSingle(userId, workoutId);
+            if (workout is null)
+                return null;
+            var defaults = user.GetUserDefaultsForActivity(workout.ActivityType);
+
+            return new PlannedWorkoutVM(workout, defaults, includeReps);
         }
 
         public async Task<bool?> DeleteWorkout(int userId, int workoutId)

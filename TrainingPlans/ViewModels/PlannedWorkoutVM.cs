@@ -14,7 +14,7 @@ namespace TrainingPlans.ViewModels
         public int Order { get; set; }
         public List<PlannedRepetitionVM> PlannedRepetitions { get; set; }
 
-        public PlannedWorkoutVM(PlannedWorkout model)
+        public PlannedWorkoutVM(PlannedWorkout model, UserDefaults defaults, bool includeReps)
         {
             Id = model.Id;
             Name = model.Name;
@@ -23,7 +23,9 @@ namespace TrainingPlans.ViewModels
             Order = model.Order;
             ActivityType = model.ActivityType;
             WorkoutType = model.WorkoutType;
-            PlannedRepetitions = model.PlannedRepetitions?.Select(x => new PlannedRepetitionVM(x)).OrderBy(x => x.Order).ToList();
+            PlannedRepetitions = includeReps ? model.PlannedRepetitions?
+                .Select(x => new PlannedRepetitionVM(x, defaults)).OrderBy(x => x.Order).ToList() : null;
+            WorkoutSummary = new WorkoutSummaryVM(model.PlannedRepetitions, defaults);
         }
         public PlannedWorkoutVM() { }
     }

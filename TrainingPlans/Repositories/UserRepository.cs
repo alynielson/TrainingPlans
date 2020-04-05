@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +12,11 @@ namespace TrainingPlans.Repositories
     {
         public UserRepository(TrainingPlanDbContext dbContext) : base(dbContext)
         {
+        }
+
+        public override async Task<User> Get(int id)
+        {
+            return await _dbContext.User.Include(x => x.UserDefaults).FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }

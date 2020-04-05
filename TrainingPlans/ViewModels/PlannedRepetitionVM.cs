@@ -10,7 +10,7 @@ namespace TrainingPlans.ViewModels
     {
         public int Quantity { get; set; } = 1;
 
-        public PlannedRepetitionVM(PlannedRepetition model)
+        public PlannedRepetitionVM(PlannedRepetition model, UserDefaults defaults)
         {
             Id = model.Id;
             DistanceQuantity = model.DistanceQuantity;
@@ -24,7 +24,7 @@ namespace TrainingPlans.ViewModels
             RestTimeQuantity = model.RestTimeQuantity;
             RestTimeUom = model.RestTimeUom;
             Order = model.Order;
-            SetPaces();
+            SetPaces(defaults);
         }
         public PlannedRepetitionVM() { }
     }

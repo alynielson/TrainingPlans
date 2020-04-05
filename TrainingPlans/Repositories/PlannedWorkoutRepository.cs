@@ -19,6 +19,14 @@ namespace TrainingPlans.Repositories
             return await _dbContext.PlannedWorkout.Where(x => x.UserId == userId).Include(x => x.PlannedRepetitions).ToListAsync();
         }
 
+        public async Task<PlannedWorkout> GetSingle(int userId, int workoutId)
+        {
+            var result = await Get(workoutId);
+            if (result?.UserId != userId)
+                return null;
+            return result;
+        }
+
         public async Task<IReadOnlyList<PlannedWorkout>> FindByDateRange(int userId, DateTime from, DateTime to)
         {
             return (await GetAll(userId))

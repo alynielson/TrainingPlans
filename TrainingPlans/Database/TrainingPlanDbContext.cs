@@ -14,6 +14,7 @@ namespace TrainingPlans.Database
         public DbSet<CompletedWorkout> CompletedWorkout { get; set; }
         public DbSet<PlannedRepetition> PlannedRepetition { get; set; }
         public DbSet<CompletedRepetition> CompletedRepetition { get; set; }
+        public DbSet<UserDefaults> UserDefaults { get; set; }
 
         // TODO: add logging
 

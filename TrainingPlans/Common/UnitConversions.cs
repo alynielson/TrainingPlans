@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TrainingPlans.Database.AdditionalData;
+using TrainingPlans.Database.Models;
 
 namespace TrainingPlans.Common
 {
@@ -15,6 +16,8 @@ namespace TrainingPlans.Common
         private static readonly double MilesToKmMultiplier = 1.609;
         private static readonly double MToMilesMultiplier = 0.000621;
         private static readonly double MilesToMMultiplier = 1609.344;
+        private static readonly double Meters100ToMMultiplier = 100;
+        private static readonly double MToMeters100Multiplier = 0.01;
 
         // Time conversions
         private static readonly double SToHMultiplier = 0.000278;
@@ -43,6 +46,18 @@ namespace TrainingPlans.Common
                     return value * MToMilesMultiplier;
                 case (DistanceUom.Kilometers, DistanceUom.Miles):
                     return value * KmToMilesMultiplier;
+                case (DistanceUom.Meters100, DistanceUom.Meters):
+                    return (value * Meters100ToMMultiplier);
+                case (DistanceUom.Meters100, DistanceUom.Kilometers):
+                    return (value * Meters100ToMMultiplier * MToKmMultiplier);
+                case (DistanceUom.Meters100, DistanceUom.Miles):
+                    return (value * Meters100ToMMultiplier * MToMilesMultiplier);
+                case (DistanceUom.Meters, DistanceUom.Meters100):
+                    return (value * MToMeters100Multiplier);
+                case (DistanceUom.Kilometers, DistanceUom.Meters100):
+                    return (value * KmToMMultiplier * MToMeters100Multiplier);
+                case (DistanceUom.Miles, DistanceUom.Meters100):
+                    return (value * MilesToMMultiplier * MToMeters100Multiplier);
             }
 
             throw new NotImplementedException($"No conversions exist for {fromUom} to {toUom}.");
@@ -72,15 +87,29 @@ namespace TrainingPlans.Common
             throw new NotImplementedException($"No conversions exist for {fromUom} to {toUom}.");
         }
 
-        public static string GetMinutesPerMileAsString(double distance, DistanceUom distanceUom, double time, TimeUom timeUom)
+        public static string GetPaceAsString(double distance, DistanceUom distanceUom, double time, TimeUom timeUom, UserDefaults defaults)
         {
-            var distanceMiles = distance.ConvertDistance(distanceUom, DistanceUom.Miles);
-            var timeSeconds = time.ConvertTime(timeUom, TimeUom.Seconds);
-            var secondsPerMile = timeSeconds / distanceMiles;
-            var minutesPerMileDouble = secondsPerMile / MinToSMultiplier;
-            var minutesPerMileNoSeconds = (int)minutesPerMileDouble;
-            var leftOverSeconds = (int)((timeSeconds - minutesPerMileNoSeconds*distanceMiles*MinToSMultiplier)/distanceMiles);
-            return $"{minutesPerMileNoSeconds}:{(leftOverSeconds < 10 ? $"0{leftOverSeconds}" : $"{leftOverSeconds}")}";
+            var distanceConverted = distance.ConvertDistance(distanceUom, defaults.DistanceUom);
+
+            if (defaults.IsPaceDistancePerTime)
+            {
+                var timeConverted = time.ConvertTime(timeUom, defaults.TimeUom);
+                var result = distanceConverted / timeConverted;
+                return $"{Math.Round(result, 2)}";
+            }
+            else
+            {
+                // It does not seem right to have hours and seconds as options here. 
+                // Just change to minutes and set the defaults to minutes for now, unless having the other options becomes reasonable.
+                var timeSeconds = time.ConvertTime(timeUom, TimeUom.Seconds);
+                var minutesPerDistanceUnit = timeSeconds * SToMinMultiplier / distanceConverted;
+                var minutesWithoutSeconds = (int)minutesPerDistanceUnit;
+                var leftoverSeconds = (timeSeconds - minutesWithoutSeconds * MinToSMultiplier * distanceConverted) / distanceConverted;
+
+                defaults.TimeUom = TimeUom.Minutes;
+
+                return $"{minutesWithoutSeconds}:{(leftoverSeconds < 10 ? $"0{leftoverSeconds}" : $"{leftoverSeconds}")}";
+            }
         }
     }
 }

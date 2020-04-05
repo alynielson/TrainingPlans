@@ -7,7 +7,7 @@ using TrainingPlans.Database.AdditionalData;
 
 namespace TrainingPlans.Database.Contracts
 {
-    public abstract class AbstractRepetition : IOrderable
+    public abstract class AbstractRepetition : IOrderable, IIdentifiable
     {
         [Key]
         public int Id { get; set; }

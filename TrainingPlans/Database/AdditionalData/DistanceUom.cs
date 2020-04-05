@@ -9,6 +9,7 @@ namespace TrainingPlans.Database.AdditionalData
     {
         Meters,
         Miles,
-        Kilometers
+        Kilometers,
+        Meters100
     }
 }

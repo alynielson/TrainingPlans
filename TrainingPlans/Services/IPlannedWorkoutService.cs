@@ -10,7 +10,8 @@ namespace TrainingPlans.Services
     public interface IPlannedWorkoutService
     {
         Task<bool> Create(PlannedWorkoutVM workout, int userId);
-        Task<IReadOnlyList<PlannedWorkoutVM>> GetInDateRange(string from, string to, int id);
+        Task<IReadOnlyList<PlannedWorkoutVM>> GetInDateRange(string from, string to, int id, bool includeReps);
         Task<bool?> DeleteWorkout(int userId, int workoutId);
+        Task<PlannedWorkoutVM> GetSingle(int userId, int workoutId, bool includeReps)
     }
 }
