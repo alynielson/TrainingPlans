@@ -23,6 +23,9 @@ namespace TrainingPlans.ViewModels
             if (modelReps is null || modelReps.Count == 0)
                 return;
 
+            TotalDistanceUom = userDefaults.DistanceUom;
+            TotalTimeUom = userDefaults.TimeUom;
+
             modelReps.ForEach(x =>
             {
                 AddToTotals(x.DistanceQuantity, x.DistanceUom, x.TimeQuantity, x.TimeUom, userDefaults, x.Quantity, false);

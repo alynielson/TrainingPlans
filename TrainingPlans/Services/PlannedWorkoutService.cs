@@ -7,6 +7,8 @@ using TrainingPlans.Database.Models;
 using TrainingPlans.Repositories;
 using TrainingPlans.ViewModels;
 using TrainingPlans.ExceptionHandling;
+using Microsoft.AspNetCore.JsonPatch;
+using FluentValidation;
 
 namespace TrainingPlans.Services
 {
@@ -14,17 +16,19 @@ namespace TrainingPlans.Services
     {
         private readonly IPlannedWorkoutRepository _plannedWorkoutRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IValidator<PlannedWorkoutVM> _plannedWorkoutValidator;
 
-        public PlannedWorkoutService(IPlannedWorkoutRepository plannedWorkoutRepository, IUserRepository userRepository)
+        public PlannedWorkoutService(IPlannedWorkoutRepository plannedWorkoutRepository, IUserRepository userRepository, IValidator<PlannedWorkoutVM> plannedWorkoutValidator)
         {
             _plannedWorkoutRepository = plannedWorkoutRepository;
             _userRepository = userRepository;
+            _plannedWorkoutValidator = plannedWorkoutValidator;
         }
 
         public async Task<bool> Create(PlannedWorkoutVM workout, int userId)
         {
             await Extensions.FindUser(userId, _userRepository);
-            var model = new PlannedWorkout(workout, userId);
+            var model = new PlannedWorkout(workout, userId, 0);
             var entriesSaved = await _plannedWorkoutRepository.Create(model);
             return entriesSaved == (model.PlannedRepetitions.Count + 1);
         }
@@ -56,6 +60,20 @@ namespace TrainingPlans.Services
             if (entriesDeleted is null)
                 return null;
             return entriesDeleted > 0;
+        }
+
+        public async Task<bool?> UpdateWorkout(int userId, int workoutId, PlannedWorkoutVM updatedWorkout)
+        {
+            await Extensions.FindUser(userId, _userRepository);
+            var workout = await _plannedWorkoutRepository.Get(workoutId);
+            if (workout is null || userId != workout.UserId)
+                return null;
+
+            if (workout.DatesAreEdited(updatedWorkout))
+                throw new RestException(System.Net.HttpStatusCode.BadRequest, "Update not successful. Date information cannot be changed in this request.");
+
+            workout.UpdateFromVM(updatedWorkout);
+            return (await _plannedWorkoutRepository.Update(workout)) > 0;
         }
     }
 }

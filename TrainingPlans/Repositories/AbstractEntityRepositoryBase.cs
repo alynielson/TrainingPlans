@@ -36,5 +36,11 @@ namespace TrainingPlans.Repositories
             _dbContext.Remove(entity);
             return await _dbContext.SaveChangesAsync();
         }
+
+        public async virtual Task<int> Update(T entity)
+        {
+            _dbContext.Update(entity);
+            return await _dbContext.SaveChangesAsync();
+        }
     }
 }

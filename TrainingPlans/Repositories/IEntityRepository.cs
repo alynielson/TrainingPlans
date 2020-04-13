@@ -12,5 +12,7 @@ namespace TrainingPlans.Repositories
         Task<T> Get(int id);
 
         Task<int?> Delete(int id);
+
+        Task<int> Update(T entity);
     }
 }

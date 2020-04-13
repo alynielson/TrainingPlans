@@ -18,17 +18,49 @@ namespace TrainingPlans.Database.Models
         public int Order { get; set; }
         public List<PlannedRepetition> PlannedRepetitions { get; set; }
         public PlannedWorkout() { }
-        public PlannedWorkout(PlannedWorkoutVM viewModel, int userId)
+        public PlannedWorkout(PlannedWorkoutVM viewModel, int userId, int id)
         {
-            Id = viewModel.Id;
+            Id = id;
             Name = viewModel.Name;
             TimeOfDay = viewModel.TimeOfDay.HasValue ? viewModel.TimeOfDay.Value : TimeOfDay.Any;
             ScheduledDate = DateTime.Parse(viewModel.ScheduledDate);
             Order = viewModel.Order;
             ActivityType = viewModel.ActivityType;
             WorkoutType = viewModel.WorkoutType;
-            PlannedRepetitions = viewModel.PlannedRepetitions?.Select(x => new PlannedRepetition(x, viewModel, userId)).ToList();
+            PlannedRepetitions = viewModel.PlannedRepetitions?.Select(x => new PlannedRepetition(x, viewModel.ActivityType, userId, x.Id)).ToList();
             UserId = userId;
+        }
+
+        public void UpdateFromVM(PlannedWorkoutVM viewModel)
+        {
+            Name = viewModel.Name;
+            ActivityType = viewModel.ActivityType;
+            WorkoutType = viewModel.WorkoutType;
+            PlannedRepetitions = GetPlannedRepetitionsFromVM(viewModel.PlannedRepetitions, viewModel.ActivityType);
+        }
+
+        private List<PlannedRepetition> GetPlannedRepetitionsFromVM(List<PlannedRepetitionVM> viewModelReps, ActivityType activity)
+        {
+            var newReps = viewModelReps?.Where(x => x.Id == 0).Select(x => new PlannedRepetition(x, activity, UserId.Value, 0)).ToList();
+            var oldRepVMs = viewModelReps?.Where(x => x.Id != 0).ToDictionary(x => x.Id, x => x);
+            var oldReps = PlannedRepetitions.Select(x =>
+            {
+                if (oldRepVMs.TryGetValue(x.Id, out var vm))
+                {
+                    x.UpdateFromParentVM(vm, activity);
+                    return x;
+                }
+                return null;
+            }).Where(x => x != null).ToList();
+            newReps.AddRange(oldReps);
+            return newReps;
+        }
+
+        public bool DatesAreEdited(PlannedWorkoutVM update)
+        {
+            return update.Order != Order
+                || update.ScheduledDate != ScheduledDate.ToString(Constants.DateOnlyFormatString)
+                || update.TimeOfDay != TimeOfDay;
         }
     }
 }

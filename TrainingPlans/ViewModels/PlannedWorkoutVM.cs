@@ -4,6 +4,7 @@ using TrainingPlans.Database.AdditionalData;
 using TrainingPlans.Database.Models;
 using TrainingPlans.Common;
 using TrainingPlans.Database.Contracts;
+using System.Text.Json.Serialization;
 
 namespace TrainingPlans.ViewModels
 {

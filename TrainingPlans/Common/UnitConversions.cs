@@ -104,7 +104,7 @@ namespace TrainingPlans.Common
                 var timeSeconds = time.ConvertTime(timeUom, TimeUom.Seconds);
                 var minutesPerDistanceUnit = timeSeconds * SToMinMultiplier / distanceConverted;
                 var minutesWithoutSeconds = (int)minutesPerDistanceUnit;
-                var leftoverSeconds = (timeSeconds - minutesWithoutSeconds * MinToSMultiplier * distanceConverted) / distanceConverted;
+                var leftoverSeconds = (int)((timeSeconds - minutesWithoutSeconds * MinToSMultiplier * distanceConverted) / distanceConverted);
 
                 defaults.TimeUom = TimeUom.Minutes;
 

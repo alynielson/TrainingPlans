@@ -3,6 +3,8 @@ using TrainingPlans.Database.AdditionalData;
 using TrainingPlans.Database.Models;
 using TrainingPlans.Common;
 using TrainingPlans.Database.Contracts;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace TrainingPlans.ViewModels
 {
@@ -10,7 +12,7 @@ namespace TrainingPlans.ViewModels
     {
         public int Quantity { get; set; } = 1;
 
-        public PlannedRepetitionVM(PlannedRepetition model, UserDefaults defaults)
+        public PlannedRepetitionVM(PlannedRepetition model, UserDefaults defaults = null)
         {
             Id = model.Id;
             DistanceQuantity = model.DistanceQuantity;
@@ -24,7 +26,8 @@ namespace TrainingPlans.ViewModels
             RestTimeQuantity = model.RestTimeQuantity;
             RestTimeUom = model.RestTimeUom;
             Order = model.Order;
-            SetPaces(defaults);
+            if (defaults is { })
+                SetPaces(defaults);
         }
         public PlannedRepetitionVM() { }
     }

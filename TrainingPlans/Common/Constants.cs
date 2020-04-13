@@ -16,6 +16,7 @@ namespace TrainingPlans.Common
         {
             { ActivityType.Bike, new UserDefaults
             {
+                ActivityType = ActivityType.Bike,
                 DistanceUom = DistanceUom.Miles,
                 TimeUom = TimeUom.Hours,
                 Pace = 14,
@@ -24,6 +25,7 @@ namespace TrainingPlans.Common
             },
             { ActivityType.Run, new UserDefaults
             {
+                ActivityType = ActivityType.Run,
                 DistanceUom = DistanceUom.Miles,
                 TimeUom = TimeUom.Minutes,
                 Pace = 9,
@@ -32,6 +34,7 @@ namespace TrainingPlans.Common
             },
             { ActivityType.Swim, new UserDefaults
             {
+                ActivityType = ActivityType.Swim,
                 DistanceUom = DistanceUom.Meters100,
                 TimeUom = TimeUom.Minutes,
                 Pace = 2,

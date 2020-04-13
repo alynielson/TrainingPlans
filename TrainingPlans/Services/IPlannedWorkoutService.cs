@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,5 +14,6 @@ namespace TrainingPlans.Services
         Task<IReadOnlyList<PlannedWorkoutVM>> GetInDateRange(string from, string to, int id, bool includeReps);
         Task<bool?> DeleteWorkout(int userId, int workoutId);
         Task<PlannedWorkoutVM> GetSingle(int userId, int workoutId, bool includeReps);
+        Task<bool?> UpdateWorkout(int userId, int workoutId, PlannedWorkoutVM updatedWorkout);
     }
 }

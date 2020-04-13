@@ -15,9 +15,9 @@ namespace TrainingPlans.Database.Models
         public PlannedWorkout PlannedWorkout { get; set; }
         [ForeignKey("PlannedWorkout")]
         public int PlannedWorkoutId { get; set; }
-        public PlannedRepetition(PlannedRepetitionVM viewModel, PlannedWorkoutVM parent, int userId)
+        public PlannedRepetition(PlannedRepetitionVM viewModel, ActivityType activityType, int userId, int id)
         {
-            Id = viewModel.Id;
+            Id = id;
             DistanceQuantity = viewModel.DistanceQuantity;
             DistanceUom = viewModel.DistanceUom;
             TimeQuantity = viewModel.TimeQuantity;
@@ -29,9 +29,25 @@ namespace TrainingPlans.Database.Models
             RestTimeQuantity = viewModel.RestTimeQuantity;
             RestTimeUom = viewModel.RestTimeUom;
             Order = viewModel.Order;
-            ActivityType = parent.ActivityType;
+            ActivityType = activityType;
             UserId = userId;
         }
+        public void UpdateFromParentVM(PlannedRepetitionVM viewModel, ActivityType activityType)
+        {
+            DistanceQuantity = viewModel.DistanceQuantity;
+            DistanceUom = viewModel.DistanceUom;
+            TimeQuantity = viewModel.TimeQuantity;
+            TimeUom = viewModel.TimeUom;
+            Notes = viewModel.Notes;
+            Quantity = viewModel.Quantity;
+            RestDistanceQuantity = viewModel.RestDistanceQuantity;
+            RestDistanceUom = viewModel.RestDistanceUom;
+            RestTimeQuantity = viewModel.RestTimeQuantity;
+            RestTimeUom = viewModel.RestTimeUom;
+            Order = viewModel.Order;
+            ActivityType = activityType;
+        }
+
         public PlannedRepetition()
         {
         }
