@@ -28,5 +28,10 @@ namespace TrainingPlans.Common
         {
             return JsonConvert.SerializeObject(value, type, settings);
         }
+
+        public static bool IsDistinctOrder(this IReadOnlyList<int> values)
+        {
+            return values.Distinct().ToList().Count == values.Count;
+        }
     }
 }

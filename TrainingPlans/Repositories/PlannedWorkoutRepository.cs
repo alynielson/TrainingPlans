@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TrainingPlans.Database;
+using TrainingPlans.Database.AdditionalData;
 using TrainingPlans.Database.Models;
 
 namespace TrainingPlans.Repositories
@@ -38,6 +39,11 @@ namespace TrainingPlans.Repositories
                 return null;
             _dbContext.Remove(workout);
             return await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<IReadOnlyList<PlannedWorkout>> GetAllMatchingTimeSpan(DateTime day, TimeOfDay timeOfDay, int userId)
+        {
+            return (await GetAll(userId)).Where(x => x.ScheduledDate >= day && x.ScheduledDate < day.AddDays(1) && x.TimeOfDay == timeOfDay).ToList();
         }
     }
 }

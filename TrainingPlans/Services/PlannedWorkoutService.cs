@@ -7,8 +7,6 @@ using TrainingPlans.Database.Models;
 using TrainingPlans.Repositories;
 using TrainingPlans.ViewModels;
 using TrainingPlans.ExceptionHandling;
-using Microsoft.AspNetCore.JsonPatch;
-using FluentValidation;
 
 namespace TrainingPlans.Services
 {
@@ -16,18 +14,17 @@ namespace TrainingPlans.Services
     {
         private readonly IPlannedWorkoutRepository _plannedWorkoutRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IValidator<PlannedWorkoutVM> _plannedWorkoutValidator;
 
-        public PlannedWorkoutService(IPlannedWorkoutRepository plannedWorkoutRepository, IUserRepository userRepository, IValidator<PlannedWorkoutVM> plannedWorkoutValidator)
+        public PlannedWorkoutService(IPlannedWorkoutRepository plannedWorkoutRepository, IUserRepository userRepository)
         {
             _plannedWorkoutRepository = plannedWorkoutRepository;
             _userRepository = userRepository;
-            _plannedWorkoutValidator = plannedWorkoutValidator;
         }
 
         public async Task<bool> Create(PlannedWorkoutVM workout, int userId)
         {
             await Extensions.FindUser(userId, _userRepository);
+            await SetValidOrder(workout, userId);
             var model = new PlannedWorkout(workout, userId, 0);
             var entriesSaved = await _plannedWorkoutRepository.Create(model);
             return entriesSaved == (model.PlannedRepetitions.Count + 1);
@@ -74,6 +71,22 @@ namespace TrainingPlans.Services
 
             workout.UpdateFromVM(updatedWorkout);
             return (await _plannedWorkoutRepository.Update(workout)) > 0;
+        }
+
+        private async Task SetValidOrder(PlannedWorkoutVM newWorkout, int userId)
+        {
+            var timeOfDay = newWorkout.TimeOfDay.HasValue ? newWorkout.TimeOfDay.Value : Database.AdditionalData.TimeOfDay.Any;
+            var existing = await _plannedWorkoutRepository.GetAllMatchingTimeSpan(DateTime.Parse(newWorkout.ScheduledDate), timeOfDay, userId);
+            if (existing is null || existing.Count == 0)
+                return;
+
+            var orders = existing.Select(x => x.Order).ToList();
+            orders.Add(newWorkout.Order);
+
+            if (orders.IsDistinctOrder())
+                return;
+
+            newWorkout.Order = orders.Max() + 1;
         }
     }
 }
