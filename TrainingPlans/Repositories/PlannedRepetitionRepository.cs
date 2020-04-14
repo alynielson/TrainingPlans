@@ -30,5 +30,9 @@ namespace TrainingPlans.Repositories
             return repetition;
         }
 
+        public int GetNumberOfRepsInWorkout(int workoutId)
+        {
+            return _dbContext.PlannedRepetition.Count(x => x.PlannedWorkoutId == workoutId);
+        }
     }
 }

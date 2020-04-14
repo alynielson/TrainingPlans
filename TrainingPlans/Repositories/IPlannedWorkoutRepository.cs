@@ -13,5 +13,6 @@ namespace TrainingPlans.Repositories
         Task<IReadOnlyList<PlannedWorkout>> GetAll(int userId);
         Task<int?> Delete(int workoutId, int userId);
         Task<IReadOnlyList<PlannedWorkout>> GetAllMatchingTimeSpan(DateTime day, TimeOfDay timeOfDay, int userId);
+        Task<IReadOnlyList<PlannedWorkout>> GetAll(IReadOnlyList<int> ids, int userId)
     }
 }

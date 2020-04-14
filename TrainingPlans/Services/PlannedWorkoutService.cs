@@ -67,10 +67,29 @@ namespace TrainingPlans.Services
                 return null;
 
             if (workout.DatesAreEdited(updatedWorkout))
-                throw new RestException(System.Net.HttpStatusCode.BadRequest, "Update not successful. Date information cannot be changed in this request.");
+                throw new RestException(System.Net.HttpStatusCode.BadRequest, "Date information cannot be changed in this request.");
 
             workout.UpdateFromVM(updatedWorkout);
             return (await _plannedWorkoutRepository.Update(workout)) > 0;
+        }
+
+        public async Task<bool> ChangeWorkoutOrders(PlannedWorkoutDateUpdate dateUpdate, int userId)
+        {
+            await Extensions.FindUser(userId, _userRepository);
+            var existing = await _plannedWorkoutRepository.GetAll(dateUpdate.WorkoutOrders.Select(x => x.WorkoutId).ToList(), userId);
+            if (existing.Count != dateUpdate.WorkoutOrders.Count)
+                throw new RestException(System.Net.HttpStatusCode.BadRequest, "Invalid workoutIds.");
+
+            var existingInTimeSpan = await _plannedWorkoutRepository.GetAllMatchingTimeSpan(DateTime.Parse(dateUpdate.ScheduledDate), dateUpdate.TimeOfDay, userId);
+            if (existingInTimeSpan.Any(x => !existing.Contains(x)))
+                throw new RestException(System.Net.HttpStatusCode.BadRequest, "Does not contain all workouts in this time span.");
+
+            var toUpdate = existing.Select(x =>
+            {
+                x.UpdateDateValues(dateUpdate);
+                return x;
+            }).ToList();
+            return (await _plannedWorkoutRepository.UpdateMany(toUpdate) == toUpdate.Count);
         }
 
         private async Task SetValidOrder(PlannedWorkoutVM newWorkout, int userId)

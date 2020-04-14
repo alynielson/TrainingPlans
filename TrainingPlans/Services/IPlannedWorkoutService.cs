@@ -15,5 +15,6 @@ namespace TrainingPlans.Services
         Task<bool?> DeleteWorkout(int userId, int workoutId);
         Task<PlannedWorkoutVM> GetSingle(int userId, int workoutId, bool includeReps);
         Task<bool?> UpdateWorkout(int userId, int workoutId, PlannedWorkoutVM updatedWorkout);
+        Task<bool> ChangeWorkoutOrders(PlannedWorkoutDateUpdate dateUpdate, int userId);
     }
 }

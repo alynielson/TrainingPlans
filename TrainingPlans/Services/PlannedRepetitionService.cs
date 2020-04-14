@@ -22,6 +22,10 @@ namespace TrainingPlans.Services
 
         public async Task<bool?> DeleteRepetition(int userId, int workoutId, int repetitionId)
         {
+            var existingRepsCount = _plannedRepetitionRepository.GetNumberOfRepsInWorkout(workoutId);
+            if (existingRepsCount < 2)
+                throw new RestException(System.Net.HttpStatusCode.BadRequest, "Cannot delete the only repetition in a workout. Add another before deleting.");
+
             var result = await _plannedRepetitionRepository.Delete(repetitionId, workoutId, userId);
             if (result is null)
                 return null;

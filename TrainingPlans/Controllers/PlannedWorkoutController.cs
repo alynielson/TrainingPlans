@@ -59,5 +59,12 @@ namespace TrainingPlans.Controllers
                 return Ok(result);
             return NotFound();
         }
+
+        [HttpPatch]
+        public async Task<IActionResult> UpdateDates([FromBody] PlannedWorkoutDateUpdate dateUpdate, [FromRoute] int userId)
+        {
+            var result = await _plannedWorkoutService.ChangeWorkoutOrders(dateUpdate, userId);
+            return Ok(result);
+        }
     }
 }

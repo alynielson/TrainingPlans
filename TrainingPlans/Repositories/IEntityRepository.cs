@@ -14,5 +14,7 @@ namespace TrainingPlans.Repositories
         Task<int?> Delete(int id);
 
         Task<int> Update(T entity);
+
+        Task<int> UpdateMany(IReadOnlyList<T> entities);
     }
 }

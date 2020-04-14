@@ -31,6 +31,13 @@ namespace TrainingPlans.Database.Models
             UserId = userId;
         }
 
+        public void UpdateDateValues(PlannedWorkoutDateUpdate dateUpdate)
+        {
+            TimeOfDay = dateUpdate.TimeOfDay;
+            ScheduledDate = DateTime.Parse(dateUpdate.ScheduledDate);
+            Order = dateUpdate.WorkoutOrders.First(x => x.WorkoutId == Id).Order;
+        }
+
         public void UpdateFromVM(PlannedWorkoutVM viewModel)
         {
             Name = viewModel.Name;

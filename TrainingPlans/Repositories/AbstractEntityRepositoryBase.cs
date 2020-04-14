@@ -42,5 +42,11 @@ namespace TrainingPlans.Repositories
             _dbContext.Update(entity);
             return await _dbContext.SaveChangesAsync();
         }
+
+        public async virtual Task<int> UpdateMany(IReadOnlyList<T> entities)
+        {
+            _dbContext.UpdateRange(entities);
+            return await _dbContext.SaveChangesAsync();
+        }
     }
 }

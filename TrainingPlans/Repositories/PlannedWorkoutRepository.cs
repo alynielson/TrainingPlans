@@ -41,6 +41,11 @@ namespace TrainingPlans.Repositories
             return await _dbContext.SaveChangesAsync();
         }
 
+        public async Task<IReadOnlyList<PlannedWorkout>> GetAll(IReadOnlyList<int> ids, int userId)
+        {
+            return await _dbContext.PlannedWorkout.Where(x => ids.Contains(x.Id) && x.UserId == userId).ToListAsync();
+        }
+
         public async Task<IReadOnlyList<PlannedWorkout>> GetAllMatchingTimeSpan(DateTime day, TimeOfDay timeOfDay, int userId)
         {
             return (await GetAll(userId)).Where(x => x.ScheduledDate >= day && x.ScheduledDate < day.AddDays(1) && x.TimeOfDay == timeOfDay).ToList();
