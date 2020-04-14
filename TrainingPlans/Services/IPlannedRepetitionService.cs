@@ -10,5 +10,6 @@ namespace TrainingPlans.Services
     {
         Task<bool?> DeleteRepetition(int userId, int workoutId, int repetitionId);
         Task<PlannedRepetitionVM> GetSingle(int userId, int workoutId, int repetitionId);
+        Task<bool?> UpdateRepetition(int userId, int workoutId, PlannedRepetitionVM viewModel);
     }
 }

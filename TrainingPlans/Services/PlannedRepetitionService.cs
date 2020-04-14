@@ -44,5 +44,19 @@ namespace TrainingPlans.Services
 
             return new PlannedRepetitionVM(model, userDefaults);
         }
+
+        public async Task<bool?> UpdateRepetition(int userId, int workoutId, PlannedRepetitionVM viewModel)
+        {
+            var existing = await _plannedRepetitionRepository.Get(viewModel.Id, workoutId, userId);
+            if (viewModel is null)
+                return null;
+
+            if (existing.OrderIsEdited(viewModel))
+                throw new RestException(System.Net.HttpStatusCode.BadRequest, "Date information cannot be edited in this request.");
+
+            existing.UpdateFromVM(viewModel);
+
+            return (await _plannedRepetitionRepository.Update(existing)) > 0;
+        }
     }
 }

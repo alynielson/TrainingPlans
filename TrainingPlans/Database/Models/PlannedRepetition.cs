@@ -48,6 +48,25 @@ namespace TrainingPlans.Database.Models
             ActivityType = activityType;
         }
 
+        public bool OrderIsEdited(PlannedRepetitionVM viewModel)
+        {
+            return !(Order == viewModel.Order);
+        }
+
+        public void UpdateFromVM(PlannedRepetitionVM viewModel)
+        {
+            DistanceQuantity = viewModel.DistanceQuantity;
+            DistanceUom = viewModel.DistanceUom;
+            TimeQuantity = viewModel.TimeQuantity;
+            TimeUom = viewModel.TimeUom;
+            Notes = viewModel.Notes;
+            Quantity = viewModel.Quantity;
+            RestDistanceQuantity = viewModel.RestDistanceQuantity;
+            RestDistanceUom = viewModel.RestDistanceUom;
+            RestTimeQuantity = viewModel.RestTimeQuantity;
+            RestTimeUom = viewModel.RestTimeUom;
+        }
+
         public PlannedRepetition()
         {
         }

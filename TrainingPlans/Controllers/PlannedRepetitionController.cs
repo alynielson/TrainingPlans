@@ -33,5 +33,15 @@ namespace TrainingPlans.Controllers
                 return Ok(result);
             return NotFound();
         }
+
+        [HttpPut]
+        public async Task<IActionResult> Update([FromRoute] int userId, [FromRoute] int workoutId, [FromBody] PlannedRepetitionVM viewModel)
+        {
+            var result = await _plannedRepetitionService.UpdateRepetition(userId, workoutId, viewModel);
+            if (result.HasValue)
+                return Ok(result);
+            return NotFound();
+        }
+
     }
 }
