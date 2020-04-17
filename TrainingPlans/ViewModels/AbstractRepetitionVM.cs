@@ -26,6 +26,25 @@ namespace TrainingPlans.ViewModels
         public TimeUom? RestTimeUom { get; set; }
         public string RestPace { get; protected set; }
 
+        public AbstractRepetitionVM(AbstractRepetition model, UserDefaults defaults = null)
+        {
+            Id = model.Id;
+            DistanceQuantity = model.DistanceQuantity;
+            DistanceUom = model.DistanceUom;
+            TimeQuantity = model.TimeQuantity;
+            TimeUom = model.TimeUom;
+            Notes = model.Notes;
+            RestDistanceQuantity = model.RestDistanceQuantity;
+            RestDistanceUom = model.RestDistanceUom;
+            RestTimeQuantity = model.RestTimeQuantity;
+            RestTimeUom = model.RestTimeUom;
+            Order = model.Order;
+            if (defaults is { })
+                SetPaces(defaults);
+        }
+
+        public AbstractRepetitionVM() { }
+
         protected void SetPaces(UserDefaults defaults)
         {
             if (DistanceQuantity.HasValue && DistanceUom.HasValue && TimeQuantity.HasValue && TimeUom.HasValue)

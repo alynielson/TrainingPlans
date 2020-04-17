@@ -12,23 +12,10 @@ namespace TrainingPlans.ViewModels
     {
         public int Quantity { get; set; } = 1;
 
-        public PlannedRepetitionVM(PlannedRepetition model, UserDefaults defaults = null)
+        public PlannedRepetitionVM(PlannedRepetition model, UserDefaults defaults = null) : base(model, defaults)
         {
-            Id = model.Id;
-            DistanceQuantity = model.DistanceQuantity;
-            DistanceUom = model.DistanceUom;
-            TimeQuantity = model.TimeQuantity;
-            TimeUom = model.TimeUom;
-            Notes = model.Notes;
             Quantity = model.Quantity;
-            RestDistanceQuantity = model.RestDistanceQuantity;
-            RestDistanceUom = model.RestDistanceUom;
-            RestTimeQuantity = model.RestTimeQuantity;
-            RestTimeUom = model.RestTimeUom;
-            Order = model.Order;
-            if (defaults is { })
-                SetPaces(defaults);
         }
-        public PlannedRepetitionVM() { }
+        public PlannedRepetitionVM() : base() { }
     }
 }
