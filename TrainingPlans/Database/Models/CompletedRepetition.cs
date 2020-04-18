@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TrainingPlans.Database.AdditionalData;
 using TrainingPlans.Database.Contracts;
+using TrainingPlans.ViewModels;
 
 namespace TrainingPlans.Database.Models
 {
@@ -17,5 +18,11 @@ namespace TrainingPlans.Database.Models
         public CompletedWorkout CompletedWorkout { get; set; }
         [ForeignKey("CompletedWorkout")]
         public int CompletedWorkoutId { get; set; }
+
+        public CompletedRepetition(CompletedRepetitionVM viewModel, ActivityType activityType, int userId, int id, int workoutId) : base(viewModel, activityType, userId, id)
+        {
+            PlannedRepetitionId = viewModel.PlannedRepetitionId;
+            CompletedWorkoutId = workoutId;
+        }
     }
 }

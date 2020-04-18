@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TrainingPlans.Database.AdditionalData;
 using TrainingPlans.Database.Models;
+using TrainingPlans.ViewModels;
 
 namespace TrainingPlans.Database.Contracts
 {
@@ -28,5 +29,51 @@ namespace TrainingPlans.Database.Contracts
         [ForeignKey("User")]
         public int? UserId { get; set; } // This should be required, but making it nullable to not cause a bunch of sql cascade problems on deleting user.
 
+        public AbstractRepetition() { }
+
+        public AbstractRepetition(AbstractRepetitionVM viewModel, ActivityType activityType, int userId, int id)
+        {
+            Id = id;
+            DistanceQuantity = viewModel.DistanceQuantity;
+            DistanceUom = viewModel.DistanceUom;
+            TimeQuantity = viewModel.TimeQuantity;
+            TimeUom = viewModel.TimeUom;
+            Notes = viewModel.Notes;
+            RestDistanceQuantity = viewModel.RestDistanceQuantity;
+            RestDistanceUom = viewModel.RestDistanceUom;
+            RestTimeQuantity = viewModel.RestTimeQuantity;
+            RestTimeUom = viewModel.RestTimeUom;
+            Order = viewModel.Order;
+            ActivityType = activityType;
+            UserId = userId;
+        }
+
+        public virtual void UpdateFromWorkoutVM(AbstractRepetitionVM viewModel, ActivityType activityType)
+        {
+            DistanceQuantity = viewModel.DistanceQuantity;
+            DistanceUom = viewModel.DistanceUom;
+            TimeQuantity = viewModel.TimeQuantity;
+            TimeUom = viewModel.TimeUom;
+            Notes = viewModel.Notes;
+            RestDistanceQuantity = viewModel.RestDistanceQuantity;
+            RestDistanceUom = viewModel.RestDistanceUom;
+            RestTimeQuantity = viewModel.RestTimeQuantity;
+            RestTimeUom = viewModel.RestTimeUom;
+            Order = viewModel.Order;
+            ActivityType = activityType;
+        }
+
+        public virtual void UpdateFromVM(AbstractRepetitionVM viewModel)
+        {
+            DistanceQuantity = viewModel.DistanceQuantity;
+            DistanceUom = viewModel.DistanceUom;
+            TimeQuantity = viewModel.TimeQuantity;
+            TimeUom = viewModel.TimeUom;
+            Notes = viewModel.Notes;
+            RestDistanceQuantity = viewModel.RestDistanceQuantity;
+            RestDistanceUom = viewModel.RestDistanceUom;
+            RestTimeQuantity = viewModel.RestTimeQuantity;
+            RestTimeUom = viewModel.RestTimeUom;
+        }
     }
 }

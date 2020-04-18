@@ -15,37 +15,16 @@ namespace TrainingPlans.Database.Models
         public PlannedWorkout PlannedWorkout { get; set; }
         [ForeignKey("PlannedWorkout")]
         public int PlannedWorkoutId { get; set; }
-        public PlannedRepetition(PlannedRepetitionVM viewModel, ActivityType activityType, int userId, int id)
+        public PlannedRepetition(PlannedRepetitionVM viewModel, ActivityType activityType, int userId, int id, int workoutId) : base(viewModel, activityType, userId, id)
         {
-            Id = id;
-            DistanceQuantity = viewModel.DistanceQuantity;
-            DistanceUom = viewModel.DistanceUom;
-            TimeQuantity = viewModel.TimeQuantity;
-            TimeUom = viewModel.TimeUom;
-            Notes = viewModel.Notes;
             Quantity = viewModel.Quantity;
-            RestDistanceQuantity = viewModel.RestDistanceQuantity;
-            RestDistanceUom = viewModel.RestDistanceUom;
-            RestTimeQuantity = viewModel.RestTimeQuantity;
-            RestTimeUom = viewModel.RestTimeUom;
-            Order = viewModel.Order;
-            ActivityType = activityType;
-            UserId = userId;
+            PlannedWorkoutId = workoutId;
+            
         }
-        public void UpdateFromParentVM(PlannedRepetitionVM viewModel, ActivityType activityType)
+        public void UpdateFromWorkoutVM(PlannedRepetitionVM viewModel, ActivityType activityType)
         {
-            DistanceQuantity = viewModel.DistanceQuantity;
-            DistanceUom = viewModel.DistanceUom;
-            TimeQuantity = viewModel.TimeQuantity;
-            TimeUom = viewModel.TimeUom;
-            Notes = viewModel.Notes;
+            base.UpdateFromWorkoutVM(viewModel, activityType);
             Quantity = viewModel.Quantity;
-            RestDistanceQuantity = viewModel.RestDistanceQuantity;
-            RestDistanceUom = viewModel.RestDistanceUom;
-            RestTimeQuantity = viewModel.RestTimeQuantity;
-            RestTimeUom = viewModel.RestTimeUom;
-            Order = viewModel.Order;
-            ActivityType = activityType;
         }
 
         public bool OrderIsEdited(PlannedRepetitionVM viewModel)
@@ -55,19 +34,11 @@ namespace TrainingPlans.Database.Models
 
         public void UpdateFromVM(PlannedRepetitionVM viewModel)
         {
-            DistanceQuantity = viewModel.DistanceQuantity;
-            DistanceUom = viewModel.DistanceUom;
-            TimeQuantity = viewModel.TimeQuantity;
-            TimeUom = viewModel.TimeUom;
-            Notes = viewModel.Notes;
+            base.UpdateFromVM(viewModel);
             Quantity = viewModel.Quantity;
-            RestDistanceQuantity = viewModel.RestDistanceQuantity;
-            RestDistanceUom = viewModel.RestDistanceUom;
-            RestTimeQuantity = viewModel.RestTimeQuantity;
-            RestTimeUom = viewModel.RestTimeUom;
         }
 
-        public PlannedRepetition()
+        public PlannedRepetition() : base()
         {
         }
     }
