@@ -4,11 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using TrainingPlans.Common;
 using TrainingPlans.Database.AdditionalData;
+using TrainingPlans.Database.Contracts;
 using TrainingPlans.Database.Models;
 
 namespace TrainingPlans.ViewModels
 {
-    public class WorkoutSummaryVM
+    public abstract class AbstractSummaryVM<T> where T : AbstractRepetition
     {
         public double TotalDistanceQuantity { get; set; }
         public DistanceUom TotalDistanceUom { get; set; }
@@ -18,7 +19,7 @@ namespace TrainingPlans.ViewModels
         public string AveragePaceUom { get; set; }
         public List<int> RepetitionIds { get; set; }
 
-        public WorkoutSummaryVM(List<PlannedRepetition> modelReps, UserDefaults userDefaults)
+        public AbstractSummaryVM(List<T> modelReps, UserDefaults userDefaults)
         {
             if (modelReps is null || modelReps.Count == 0)
                 return;
@@ -28,25 +29,8 @@ namespace TrainingPlans.ViewModels
 
             modelReps.ForEach(x =>
             {
-                AddToTotals(x.DistanceQuantity, x.DistanceUom, x.TimeQuantity, x.TimeUom, userDefaults, x.Quantity, false);
-                AddToTotals(x.RestDistanceQuantity, x.RestDistanceUom, x.RestTimeQuantity, x.RestTimeUom, userDefaults, x.Quantity, true);
-            });
-
-            RepetitionIds = modelReps.Select(x => x.Id).ToList();
-            AveragePace = UnitConversions.GetPaceAsString(TotalDistanceQuantity, TotalDistanceUom, TotalTimeQuantity, TotalTimeUom, userDefaults);
-            AveragePaceUom = userDefaults.IsPaceDistancePerTime 
-                ? $"{userDefaults.DistanceUom}/{userDefaults.TimeUom}" : $"{userDefaults.TimeUom}/{userDefaults.DistanceUom}";
-        }
-
-        public WorkoutSummaryVM(List<CompletedRepetition> modelReps, UserDefaults userDefaults)
-        {
-            if (modelReps is null || modelReps.Count == 0)
-                return;
-
-            modelReps.ForEach(x =>
-            {
-                AddToTotals(x.DistanceQuantity, x.DistanceUom, x.TimeQuantity, x.TimeUom, userDefaults, 1, false);
-                AddToTotals(x.RestDistanceQuantity, x.RestDistanceUom, x.RestTimeQuantity, x.RestTimeUom, userDefaults, 1, true);
+                AddToTotals(x, userDefaults, false);
+                AddToTotals(x, userDefaults, true);
             });
 
             RepetitionIds = modelReps.Select(x => x.Id).ToList();
@@ -55,7 +39,9 @@ namespace TrainingPlans.ViewModels
                 ? $"{userDefaults.DistanceUom}/{userDefaults.TimeUom}" : $"{userDefaults.TimeUom}/{userDefaults.DistanceUom}";
         }
 
-        private void AddToTotals(double? distanceQuantity, DistanceUom? distanceUom, double? timeQuantity, TimeUom? timeUom, 
+        protected abstract void AddToTotals(T repetition, UserDefaults userDefaults, bool isRest);
+
+        protected void AddToTotals(double? distanceQuantity, DistanceUom? distanceUom, double? timeQuantity, TimeUom? timeUom,
             UserDefaults userDefaults, int quantity, bool isRest)
         {
             double? repDistance = null;

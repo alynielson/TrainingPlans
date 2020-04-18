@@ -14,19 +14,16 @@ namespace TrainingPlans.ViewModels
         public string ScheduledDate { get; set; }
         public int Order { get; set; }
         public List<PlannedRepetitionVM> PlannedRepetitions { get; set; }
+        public PlannedWorkoutSummaryVM WorkoutSummary { get; set; }
 
-        public PlannedWorkoutVM(PlannedWorkout model, UserDefaults defaults, bool includeReps)
+        public PlannedWorkoutVM(PlannedWorkout model, UserDefaults defaults, bool includeReps) : base(model)
         {
-            Id = model.Id;
-            Name = model.Name;
             TimeOfDay = model.TimeOfDay;
             ScheduledDate = model.ScheduledDate.ToString(Constants.DateOnlyFormatString);
             Order = model.Order;
-            ActivityType = model.ActivityType;
-            WorkoutType = model.WorkoutType;
             PlannedRepetitions = includeReps ? model.PlannedRepetitions?
                 .Select(x => new PlannedRepetitionVM(x, defaults)).OrderBy(x => x.Order).ToList() : null;
-            WorkoutSummary = new WorkoutSummaryVM(model.PlannedRepetitions, defaults);
+            WorkoutSummary = new PlannedWorkoutSummaryVM(model.PlannedRepetitions, defaults);
         }
         public PlannedWorkoutVM() { }
     }
