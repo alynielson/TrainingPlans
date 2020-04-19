@@ -15,7 +15,7 @@ namespace TrainingPlans
     {
         public static void ConfigureDatabaseServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<TrainingPlanDbContext>(options =>
+            services.AddDbContextPool<TrainingPlanDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("TrainingPlansSqlDatabase")));
         }
 
