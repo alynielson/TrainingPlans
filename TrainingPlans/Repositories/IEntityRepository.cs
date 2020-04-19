@@ -16,5 +16,7 @@ namespace TrainingPlans.Repositories
         Task<int> Update(T entity);
 
         Task<int> UpdateMany(IReadOnlyList<T> entities);
+
+        Task<T> GetNoTracking(int id);
     }
 }

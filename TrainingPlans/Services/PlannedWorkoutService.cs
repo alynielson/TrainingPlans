@@ -35,7 +35,7 @@ namespace TrainingPlans.Services
             var fromDate = from.ValidateDate();
             var toDate = to.ValidateDate();
             var user = await Extensions.FindUser(userId, _userRepository);
-            var plan = await _plannedWorkoutRepository.FindByDateRange(userId, fromDate, toDate);
+            var plan = await _plannedWorkoutRepository.FindByDateRange(userId, fromDate, toDate, false);
 
             var userDefaults = user.GetUserDefaultsFormatted();
 
@@ -45,7 +45,7 @@ namespace TrainingPlans.Services
         public async Task<PlannedWorkoutVM> GetSingle(int userId, int workoutId, bool includeReps)
         {
             var user = await Extensions.FindUser(userId, _userRepository);
-            var workout = await _plannedWorkoutRepository.Get(workoutId);
+            var workout = await _plannedWorkoutRepository.GetNoTracking(workoutId);
             if (workout is null || userId != workout.UserId)
                 return null;
             var defaults = user.GetUserDefaultsForActivity(workout.ActivityType);

@@ -9,7 +9,7 @@ namespace TrainingPlans.Repositories
     public interface ICompletedRepetitionRepository : IEntityRepository<CompletedRepetition>
     {
         int GetNumberOfRepsInWorkout(int workoutId);
-        Task<CompletedRepetition> Get(int repetitionId, int workoutId, int userId);
+        Task<CompletedRepetition> Get(int repetitionId, int workoutId, int userId, bool track = true);
         Task<int?> Delete(int repetitionId, int workoutId, int userId);
     }
 }

@@ -48,5 +48,11 @@ namespace TrainingPlans.Repositories
             _dbContext.UpdateRange(entities);
             return await _dbContext.SaveChangesAsync();
         }
+
+        public async virtual Task<T> GetNoTracking(int id)
+        {
+            _dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            return await Get(id);
+        }
     }
 }

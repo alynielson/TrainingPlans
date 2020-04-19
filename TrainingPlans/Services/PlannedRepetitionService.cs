@@ -35,7 +35,7 @@ namespace TrainingPlans.Services
 
         public async Task<PlannedRepetitionVM> GetSingle(int userId, int workoutId, int repetitionId)
         {
-            var model = await _plannedRepetitionRepository.Get(repetitionId, workoutId, userId);
+            var model = await _plannedRepetitionRepository.Get(repetitionId, workoutId, userId, false);
             if (model is null)
                 return null;
 

@@ -15,8 +15,10 @@ namespace TrainingPlans.Repositories
         {
         }
 
-        public async Task<IReadOnlyList<PlannedWorkout>> GetAll(int userId)
+        public async Task<IReadOnlyList<PlannedWorkout>> GetAll(int userId, bool track = true)
         {
+            if (!track)
+                _dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
             return await _dbContext.PlannedWorkout.Where(x => x.UserId == userId).Include(x => x.PlannedRepetitions).ToListAsync();
         }
 
@@ -25,9 +27,14 @@ namespace TrainingPlans.Repositories
             return await _dbContext.PlannedWorkout.Include(x => x.PlannedRepetitions).FirstOrDefaultAsync(x => x.Id == workoutId);
         }
 
-        public async Task<IReadOnlyList<PlannedWorkout>> FindByDateRange(int userId, DateTime from, DateTime to)
+        public override async Task<PlannedWorkout> GetNoTracking(int workoutId)
         {
-            return (await GetAll(userId))
+            return await _dbContext.PlannedWorkout.AsNoTracking().Include(x => x.PlannedRepetitions).FirstOrDefaultAsync(x => x.Id == workoutId);
+        }
+
+        public async Task<IReadOnlyList<PlannedWorkout>> FindByDateRange(int userId, DateTime from, DateTime to, bool track = true)
+        {
+            return (await GetAll(userId, track))
                 .Where(x => x.ScheduledDate >= from && x.ScheduledDate <= to)
                 .ToList();
         }
@@ -41,14 +48,16 @@ namespace TrainingPlans.Repositories
             return await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<IReadOnlyList<PlannedWorkout>> GetAll(IReadOnlyList<int> ids, int userId)
+        public async Task<IReadOnlyList<PlannedWorkout>> GetAll(IReadOnlyList<int> ids, int userId, bool track = true)
         {
+            if (!track)
+                _dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
             return await _dbContext.PlannedWorkout.Where(x => ids.Contains(x.Id) && x.UserId == userId).ToListAsync();
         }
 
-        public async Task<IReadOnlyList<PlannedWorkout>> GetAllMatchingTimeSpan(DateTime day, TimeOfDay timeOfDay, int userId)
+        public async Task<IReadOnlyList<PlannedWorkout>> GetAllMatchingTimeSpan(DateTime day, TimeOfDay timeOfDay, int userId, bool track = true)
         {
-            return (await GetAll(userId)).Where(x => x.ScheduledDate >= day && x.ScheduledDate < day.AddDays(1) && x.TimeOfDay == timeOfDay).ToList();
+            return (await GetAll(userId, track)).Where(x => x.ScheduledDate >= day && x.ScheduledDate < day.AddDays(1) && x.TimeOfDay == timeOfDay).ToList();
         }
     }
 }

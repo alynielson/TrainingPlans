@@ -22,9 +22,9 @@ namespace TrainingPlans.Repositories
             return await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<PlannedRepetition> Get(int repetitionId, int workoutId, int userId)
+        public async Task<PlannedRepetition> Get(int repetitionId, int workoutId, int userId, bool track = true)
         {
-            var repetition = await Get(repetitionId);
+            var repetition = track ? await Get(repetitionId) : await GetNoTracking(repetitionId);
             if (repetition is null || repetition.PlannedWorkoutId != workoutId || repetition.UserId != userId)
                 return null;
             return repetition;

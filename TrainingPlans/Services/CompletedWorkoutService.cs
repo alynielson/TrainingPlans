@@ -64,7 +64,7 @@ namespace TrainingPlans.Services
         public async Task<CompletedWorkoutVM> GetCompletedWorkout(int userId, int workoutId, bool includeReps)
         {
             var user = await Extensions.FindUser(userId, _userRepository);
-            var workout = await _completedWorkoutRepository.Get(workoutId);
+            var workout = await _completedWorkoutRepository.GetNoTracking(workoutId);
             if (workout is null || userId != workout.UserId)
                 return null;
             var defaults = user.GetUserDefaultsForActivity(workout.ActivityType);
@@ -77,7 +77,7 @@ namespace TrainingPlans.Services
             var toDate = to.ValidateDate();
 
             var user = await Extensions.FindUser(userId, _userRepository);
-            var workout = await _completedWorkoutRepository.FindByDateRange(userId, fromDate, toDate);
+            var workout = await _completedWorkoutRepository.FindByDateRange(userId, fromDate, toDate, false);
 
             var userDefaults = user.GetUserDefaultsFormatted();
             return workout?.OrderBy(x => x.CompletedDateTime).Select(x => new CompletedWorkoutVM(x, userDefaults[x.ActivityType], includeReps)).ToList();
@@ -107,7 +107,7 @@ namespace TrainingPlans.Services
                 return;
             }
 
-            var plannedWorkout = await _plannedWorkoutRepository.Get(viewModel.PlannedWorkoutId.Value);
+            var plannedWorkout = await _plannedWorkoutRepository.GetNoTracking(viewModel.PlannedWorkoutId.Value);
             if (plannedWorkout is null || plannedWorkout.UserId != userId)
                 throw new RestException(System.Net.HttpStatusCode.NotFound, "Planned workout not found.");
             if (!VerifyPlannedRepetitionIds(viewModel, plannedWorkout))
