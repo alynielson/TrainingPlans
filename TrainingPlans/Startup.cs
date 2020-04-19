@@ -23,6 +23,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json.Serialization;
+using TrainingPlans.Caching;
 
 namespace TrainingPlans
 {
@@ -40,6 +41,8 @@ namespace TrainingPlans
         {
             services.ConfigureDatabaseServices(Configuration);
 
+            services.AddDistributedMemoryCache();
+            services.AddSingleton(typeof(ICacheProvider<>), typeof(DistributedCacheProvider<>));
             services.InjectRepositories();
             services.InjectServices();
             services.AddControllers(options =>

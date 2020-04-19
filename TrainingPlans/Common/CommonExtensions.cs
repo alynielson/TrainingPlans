@@ -19,16 +19,6 @@ namespace TrainingPlans.Common
             throw new RestException(System.Net.HttpStatusCode.BadRequest, "Invalid date format.");
         }
 
-        public static string ToJsonString<T>(this T value, JsonSerializerSettings settings = null)
-        {
-            return JsonConvert.SerializeObject(value, typeof(T), settings);
-        }
-
-        public static string ToJsonString(this object value, Type type, JsonSerializerSettings settings = null)
-        {
-            return JsonConvert.SerializeObject(value, type, settings);
-        }
-
         public static bool IsDistinctOrder(this IReadOnlyList<int> values)
         {
             return values.Distinct().ToList().Count == values.Count;
