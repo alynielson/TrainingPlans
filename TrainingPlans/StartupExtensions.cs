@@ -24,6 +24,7 @@ namespace TrainingPlans
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IPlannedRepetitionRepository, PlannedRepetitionRepository>();
             services.AddTransient<IPlannedWorkoutRepository, PlannedWorkoutRepository>();
+            services.AddTransient<ICompletedWorkoutRepository, CompletedWorkoutRepository>();
         }
 
         public static void InjectServices(this IServiceCollection services)
@@ -31,6 +32,7 @@ namespace TrainingPlans
             services.AddTransient<IPlannedRepetitionService, PlannedRepetitionService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IPlannedWorkoutService, PlannedWorkoutService>();
+            services.AddTransient<ICompletedWorkoutService, CompletedWorkoutService>();
         }
     }
 }

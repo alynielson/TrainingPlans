@@ -27,11 +27,6 @@ namespace TrainingPlans.Database.Models
             Quantity = viewModel.Quantity;
         }
 
-        public bool OrderIsEdited(PlannedRepetitionVM viewModel)
-        {
-            return !(Order == viewModel.Order);
-        }
-
         public void UpdateFromVM(PlannedRepetitionVM viewModel)
         {
             base.UpdateFromVM(viewModel);

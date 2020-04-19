@@ -75,5 +75,10 @@ namespace TrainingPlans.Database.Contracts
             RestTimeQuantity = viewModel.RestTimeQuantity;
             RestTimeUom = viewModel.RestTimeUom;
         }
+
+        public bool OrderIsEdited(PlannedRepetitionVM viewModel)
+        {
+            return !(Order == viewModel.Order);
+        }
     }
 }

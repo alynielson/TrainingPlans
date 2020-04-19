@@ -32,8 +32,10 @@ namespace TrainingPlans.Services
 
         public async Task<IReadOnlyList<PlannedWorkoutVM>> GetInDateRange(string from, string to, int userId, bool includeReps)
         {
+            var fromDate = from.ValidateDate();
+            var toDate = to.ValidateDate();
             var user = await Extensions.FindUser(userId, _userRepository);
-            var plan = await _plannedWorkoutRepository.FindByDateRange(userId, from.ValidateDate(), to.ValidateDate());
+            var plan = await _plannedWorkoutRepository.FindByDateRange(userId, fromDate, toDate);
 
             var userDefaults = user.GetUserDefaultsFormatted();
 

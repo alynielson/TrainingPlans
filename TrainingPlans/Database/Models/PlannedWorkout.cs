@@ -32,16 +32,14 @@ namespace TrainingPlans.Database.Models
 
         public void UpdateFromVM(PlannedWorkoutVM viewModel)
         {
-            Name = viewModel.Name;
-            ActivityType = viewModel.ActivityType;
-            WorkoutType = viewModel.WorkoutType;
+            base.UpdateFromVM(viewModel);
             PlannedRepetitions = GetPlannedRepetitionsFromVM(viewModel.PlannedRepetitions);
         }
 
         private List<PlannedRepetition> GetPlannedRepetitionsFromVM(List<PlannedRepetitionVM> viewModelReps)
         {
             var newReps = viewModelReps?.Where(x => x.Id == 0).Select(x => new PlannedRepetition(x, ActivityType, UserId.Value, 0, Id)).ToList();
-            return GetPlannedRepetitionsFromVM(newReps, PlannedRepetitions, viewModelReps);
+            return GetRepetitionsFromVM(newReps, PlannedRepetitions, viewModelReps);
         }
 
         public bool DatesAreEdited(PlannedWorkoutVM update)

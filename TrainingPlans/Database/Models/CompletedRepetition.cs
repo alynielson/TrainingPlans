@@ -24,5 +24,13 @@ namespace TrainingPlans.Database.Models
             PlannedRepetitionId = viewModel.PlannedRepetitionId;
             CompletedWorkoutId = workoutId;
         }
+
+        public void UpdateFromWorkoutVM(CompletedRepetitionVM viewModel, ActivityType activityType)
+        {
+            base.UpdateFromWorkoutVM(viewModel, activityType);
+            PlannedRepetitionId = viewModel.PlannedRepetitionId;
+        }
+
+        public CompletedRepetition() : base() { }
     }
 }

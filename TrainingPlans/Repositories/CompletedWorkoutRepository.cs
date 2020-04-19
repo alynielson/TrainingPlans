@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +12,32 @@ namespace TrainingPlans.Repositories
     {
         public CompletedWorkoutRepository(TrainingPlanDbContext dbContext) : base(dbContext)
         {
+        }
+
+        public override async Task<CompletedWorkout> Get(int workoutId)
+        {
+            return await _dbContext.CompletedWorkout.Include(x => x.CompletedRepetitions).FirstOrDefaultAsync(x => x.Id == workoutId);
+        }
+
+        public async Task<int?> Delete(int workoutId, int userId)
+        {
+            var workout = await base.Get(workoutId);
+            if (workout is null || workout.UserId != userId)
+                return null;
+            _dbContext.Remove(workout);
+            return await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<IReadOnlyList<CompletedWorkout>> GetAll(int userId)
+        {
+            return await _dbContext.CompletedWorkout.Where(x => x.UserId == userId).Include(x => x.CompletedRepetitions).ToListAsync();
+        }
+
+        public async Task<IReadOnlyList<CompletedWorkout>> FindByDateRange(int userId, DateTime from, DateTime to)
+        {
+            return (await GetAll(userId))
+                .Where(x => x.CompletedDateTime >= from && x.CompletedDateTime <= to)
+                .ToList();
         }
     }
 }

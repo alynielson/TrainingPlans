@@ -32,7 +32,7 @@ namespace TrainingPlans.Database.Contracts
 
         public AbstractWorkout() { }
 
-        protected List<T> GetPlannedRepetitionsFromVM<T, Tvm>(List<T> newReps, List<T> existingReps, List<Tvm> viewModelReps) 
+        protected List<T> GetRepetitionsFromVM<T, Tvm>(List<T> newReps, List<T> existingReps, List<Tvm> viewModelReps) 
             where T : AbstractRepetition where Tvm : AbstractRepetitionVM
         {
             var oldRepVMs = viewModelReps?.Where(x => x.Id != 0).ToDictionary(x => x.Id, x => x);
@@ -47,6 +47,13 @@ namespace TrainingPlans.Database.Contracts
             }).Where(x => x != null).ToList();
             newReps.AddRange(oldReps);
             return newReps;
+        }
+
+        protected virtual void UpdateFromVM(AbstractWorkoutVM viewModel)
+        {
+            Name = viewModel.Name;
+            ActivityType = viewModel.ActivityType;
+            WorkoutType = viewModel.WorkoutType;
         }
     }
 }
