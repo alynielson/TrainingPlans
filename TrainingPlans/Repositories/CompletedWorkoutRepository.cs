@@ -33,18 +33,13 @@ namespace TrainingPlans.Repositories
             return await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<IReadOnlyList<CompletedWorkout>> GetAll(int userId, bool track = true)
+        public async Task<IReadOnlyList<CompletedWorkout>> FindByDateRange(int userId, DateTime from, DateTime to, bool track = true)
         {
             if (!track)
                 _dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-            return await _dbContext.CompletedWorkout.Where(x => x.UserId == userId).Include(x => x.CompletedRepetitions).ToListAsync();
-        }
-
-        public async Task<IReadOnlyList<CompletedWorkout>> FindByDateRange(int userId, DateTime from, DateTime to, bool track = true)
-        {
-            return (await GetAll(userId, track))
-                .Where(x => x.CompletedDateTime >= from && x.CompletedDateTime <= to)
-                .ToList();
+            return await _dbContext.CompletedWorkout
+                .Where(x => x.CompletedDateTime >= from && x.CompletedDateTime <= to && x.UserId == userId)
+                .ToListAsync();
         }
     }
 }

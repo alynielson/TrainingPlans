@@ -15,13 +15,6 @@ namespace TrainingPlans.Repositories
         {
         }
 
-        public async Task<IReadOnlyList<PlannedWorkout>> GetAll(int userId, bool track = true)
-        {
-            if (!track)
-                _dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-            return await _dbContext.PlannedWorkout.Where(x => x.UserId == userId).Include(x => x.PlannedRepetitions).ToListAsync();
-        }
-
         public override async Task<PlannedWorkout> Get(int workoutId)
         {
             return await _dbContext.PlannedWorkout.Include(x => x.PlannedRepetitions).FirstOrDefaultAsync(x => x.Id == workoutId);
@@ -34,9 +27,12 @@ namespace TrainingPlans.Repositories
 
         public async Task<IReadOnlyList<PlannedWorkout>> FindByDateRange(int userId, DateTime from, DateTime to, bool track = true)
         {
-            return (await GetAll(userId, track))
-                .Where(x => x.ScheduledDate >= from && x.ScheduledDate <= to)
-                .ToList();
+            if (!track)
+                _dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            return await _dbContext.PlannedWorkout
+                .Where(x => x.ScheduledDate >= from && x.ScheduledDate <= to && x.UserId == userId)
+                .Include(x => x.PlannedRepetitions)
+                .ToListAsync();
         }
 
         public async Task<int?> Delete(int workoutId, int userId)
@@ -57,7 +53,11 @@ namespace TrainingPlans.Repositories
 
         public async Task<IReadOnlyList<PlannedWorkout>> GetAllMatchingTimeSpan(DateTime day, TimeOfDay timeOfDay, int userId, bool track = true)
         {
-            return (await GetAll(userId, track)).Where(x => x.ScheduledDate >= day && x.ScheduledDate < day.AddDays(1) && x.TimeOfDay == timeOfDay).ToList();
+            if (!track)
+                _dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            return await _dbContext.PlannedWorkout
+                .Where(x => x.ScheduledDate >= day && x.ScheduledDate < day.AddDays(1) && x.TimeOfDay == timeOfDay && x.UserId == userId)
+                .Include(x => x.PlannedRepetitions).ToListAsync();
         }
     }
 }
