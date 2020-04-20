@@ -1,29 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using TrainingPlans.ExceptionHandling;
-using Microsoft.Extensions.Logging;
-using TrainingPlans.Database;
-using TrainingPlans.Database.Models;
-using TrainingPlans.Repositories;
-using TrainingPlans.Services;
-using TrainingPlans.ViewModels.Validators;
-using TrainingPlans.ViewModels;
-using FluentValidation;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
 using System.Text.Json.Serialization;
-using TrainingPlans.Caching;
 
 namespace TrainingPlans
 {
@@ -42,7 +23,6 @@ namespace TrainingPlans
             services.ConfigureDatabaseServices(Configuration);
 
             services.AddDistributedMemoryCache();
-            services.AddSingleton(typeof(ICacheProvider<>), typeof(DistributedCacheProvider<>));
             services.InjectRepositories();
             services.InjectServices();
             services.AddControllers(options =>

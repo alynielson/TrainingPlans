@@ -7,6 +7,8 @@ using TrainingPlans.Database.Models;
 using TrainingPlans.Repositories;
 using TrainingPlans.ViewModels;
 using TrainingPlans.ExceptionHandling;
+using TrainingPlans.Caching;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace TrainingPlans.Services
 {
@@ -14,16 +16,18 @@ namespace TrainingPlans.Services
     {
         private readonly IPlannedWorkoutRepository _plannedWorkoutRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IDistributedCache _cache;
 
-        public PlannedWorkoutService(IPlannedWorkoutRepository plannedWorkoutRepository, IUserRepository userRepository)
+        public PlannedWorkoutService(IPlannedWorkoutRepository plannedWorkoutRepository, IUserRepository userRepository, IDistributedCache cache)
         {
             _plannedWorkoutRepository = plannedWorkoutRepository;
             _userRepository = userRepository;
+            _cache = cache;
         }
 
         public async Task<bool> Create(PlannedWorkoutVM workout, int userId)
         {
-            await Extensions.FindUser(userId, _userRepository);
+            await Extensions.FindUser(userId, _userRepository, _cache);
             await SetValidOrder(workout, userId);
             var model = new PlannedWorkout(workout, userId, 0);
             var entriesSaved = await _plannedWorkoutRepository.Create(model);
@@ -34,7 +38,9 @@ namespace TrainingPlans.Services
         {
             var fromDate = from.ValidateDate();
             var toDate = to.ValidateDate();
-            var user = await Extensions.FindUser(userId, _userRepository);
+
+
+            var user = await Extensions.FindUser(userId, _userRepository, _cache);
             var plan = await _plannedWorkoutRepository.FindByDateRange(userId, fromDate, toDate, false);
 
             var userDefaults = user.GetUserDefaultsFormatted();
@@ -44,7 +50,7 @@ namespace TrainingPlans.Services
 
         public async Task<PlannedWorkoutVM> GetSingle(int userId, int workoutId, bool includeReps)
         {
-            var user = await Extensions.FindUser(userId, _userRepository);
+            var user = await Extensions.FindUser(userId, _userRepository, _cache);
             var workout = await _plannedWorkoutRepository.GetNoTracking(workoutId);
             if (workout is null || userId != workout.UserId)
                 return null;
@@ -63,7 +69,7 @@ namespace TrainingPlans.Services
 
         public async Task<bool?> UpdateWorkout(int userId, int workoutId, PlannedWorkoutVM updatedWorkout)
         {
-            await Extensions.FindUser(userId, _userRepository);
+            await Extensions.FindUser(userId, _userRepository, _cache);
             var workout = await _plannedWorkoutRepository.Get(workoutId);
             if (workout is null || userId != workout.UserId)
                 return null;
@@ -77,7 +83,7 @@ namespace TrainingPlans.Services
 
         public async Task<bool> ChangeWorkoutOrders(PlannedWorkoutDateUpdate dateUpdate, int userId)
         {
-            await Extensions.FindUser(userId, _userRepository);
+            await Extensions.FindUser(userId, _userRepository, _cache);
             var existing = await _plannedWorkoutRepository.GetAll(dateUpdate.WorkoutOrders.Select(x => x.WorkoutId).ToList(), userId);
             if (existing.Count != dateUpdate.WorkoutOrders.Count)
                 throw new RestException(System.Net.HttpStatusCode.BadRequest, "Invalid workoutIds.");

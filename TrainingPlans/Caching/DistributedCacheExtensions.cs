@@ -1,24 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using TrainingPlans.Common;
 
 namespace TrainingPlans.Caching
 {
-    public class DistributedCacheProvider<T> : ICacheProvider<T>
+    public static class DistributedCacheExtensions
     {
-        private readonly IDistributedCache _cache;
-        public DistributedCacheProvider(IDistributedCache cache)
+        public static async Task<T> GetOrAdd<T>(this IDistributedCache cache, string key, 
+            Func<Task<T>> valueRetriever, TimeSpan? slidingExpiration = null, TimeSpan? absoluteExpiration = null) 
         {
-            _cache = cache;
-        }
-
-        public async Task<T> GetOrAdd(string key, Func<T> valueRetriever, TimeSpan? slidingExpiration = null, TimeSpan? absoluteExpiration = null) 
-        {
-            var existing = await _cache.GetAsync(key);
+            var existing = await cache.GetAsync(key);
             if (existing != null)
                 return await existing.FromByteArray<T>();
             var options = new DistributedCacheEntryOptions
@@ -26,32 +18,33 @@ namespace TrainingPlans.Caching
                 SlidingExpiration = slidingExpiration.HasValue ? slidingExpiration : TimeSpan.FromMinutes(10),
                 AbsoluteExpirationRelativeToNow = absoluteExpiration.HasValue ? absoluteExpiration : TimeSpan.FromMinutes(60)
             };
-            var value = valueRetriever();
-            await _cache.SetAsync(key, await value.ToByteArray(), options);
+            var value = await valueRetriever();
+            await cache.SetAsync(key, await value.ToByteArray(), options);
             return value;
         }
 
-        public async Task TryRemove(string key)
+        public static async Task TryRemove<T>(this IDistributedCache cache, string key)
         {
-            if (await _cache.GetAsync(key) is null)
+            if (await cache.GetAsync(key) is null)
                 return;
-            await _cache.RemoveAsync(key);
+            await cache.RemoveAsync(key);
         }
 
-        public async Task<T> Get(string key)
+        public static async Task<T> Get<T>(this IDistributedCache cache, string key)
         {
-            var result = await _cache.GetAsync(key);
+            var result = await cache.GetAsync(key);
             return await result.FromByteArray<T>();
         }
 
-        public async Task AddOrUpdate(string key, T value, TimeSpan? slidingExpiration = null, TimeSpan? absoluteExpiration = null)
+        public static async Task AddOrUpdate<T>(this IDistributedCache cache, string key, T value, 
+            TimeSpan? slidingExpiration = null, TimeSpan? absoluteExpiration = null)
         {
             var options = new DistributedCacheEntryOptions
             {
                 SlidingExpiration = slidingExpiration.HasValue ? slidingExpiration : TimeSpan.FromMinutes(10),
                 AbsoluteExpirationRelativeToNow = absoluteExpiration.HasValue ? absoluteExpiration : TimeSpan.FromMinutes(60)
             };
-            await _cache.SetAsync(key, await value.ToByteArray(), options);
+            await cache.SetAsync(key, await value.ToByteArray(), options);
         }
     }
 }

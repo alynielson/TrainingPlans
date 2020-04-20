@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Caching.Distributed;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,11 +13,13 @@ namespace TrainingPlans.Services
     {
         private readonly ICompletedRepetitionRepository _completedRepetitionRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IDistributedCache _cache;
 
-        public CompletedRepetitionService(ICompletedRepetitionRepository completedRepetitionRepository, IUserRepository userRepository)
+        public CompletedRepetitionService(ICompletedRepetitionRepository completedRepetitionRepository, IUserRepository userRepository, IDistributedCache cache)
         {
             _completedRepetitionRepository = completedRepetitionRepository;
             _userRepository = userRepository;
+            _cache = cache;
         }
 
         public async Task<bool?> DeleteRepetition(int userId, int workoutId, int repetitionId)
@@ -38,7 +41,7 @@ namespace TrainingPlans.Services
             if (model is null)
                 return null;
 
-            var user = await Extensions.FindUser(userId, _userRepository);
+            var user = await Extensions.FindUser(userId, _userRepository, _cache);
             var userDefaults = user.GetUserDefaultsForActivity(model.ActivityType);
 
             return new CompletedRepetitionVM(model, userDefaults);

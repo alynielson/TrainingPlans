@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Caching.Distributed;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,18 +16,20 @@ namespace TrainingPlans.Services
         private readonly ICompletedWorkoutRepository _completedWorkoutRepository;
         private readonly IUserRepository _userRepository;
         private readonly IPlannedWorkoutRepository _plannedWorkoutRepository;
+        private readonly IDistributedCache _cache;
 
         public CompletedWorkoutService(ICompletedWorkoutRepository CompletedWorkoutRepository, IUserRepository userRepository,
-            IPlannedWorkoutRepository plannedWorkoutRepository)
+            IPlannedWorkoutRepository plannedWorkoutRepository, IDistributedCache cache)
         {
             _completedWorkoutRepository = CompletedWorkoutRepository;
             _userRepository = userRepository;
             _plannedWorkoutRepository = plannedWorkoutRepository;
+            _cache = cache;
         }
 
         public async Task<bool> CompleteUnplannedWorkout(int userId, CompletedWorkoutVM viewModel)
         {
-            await Extensions.FindUser(userId, _userRepository);
+            await Extensions.FindUser(userId, _userRepository, _cache);
             viewModel.PlannedWorkoutId = null;
             var model = new CompletedWorkout(viewModel, userId, 0);
             var entriesSaved = await _completedWorkoutRepository.Create(model);
@@ -35,7 +38,7 @@ namespace TrainingPlans.Services
 
         public async Task<bool> CompletePlannedWorkout(int userId, CompletedWorkoutVM viewModel)
         {
-            await Extensions.FindUser(userId, _userRepository);
+            await Extensions.FindUser(userId, _userRepository, _cache);
             await VerifyReferencedPlannedWorkout(viewModel, userId, true);
 
             var model = new CompletedWorkout(viewModel, userId, 0);
@@ -45,7 +48,7 @@ namespace TrainingPlans.Services
 
         public async Task<bool?> UpdateCompletedWorkout(int userId, int workoutId, CompletedWorkoutVM viewModel)
         {
-            await Extensions.FindUser(userId, _userRepository);
+            await Extensions.FindUser(userId, _userRepository, _cache);
             var workout = await _completedWorkoutRepository.Get(workoutId);
             if (workout is null || userId != workout.UserId)
                 return null;
@@ -63,7 +66,7 @@ namespace TrainingPlans.Services
         }
         public async Task<CompletedWorkoutVM> GetCompletedWorkout(int userId, int workoutId, bool includeReps)
         {
-            var user = await Extensions.FindUser(userId, _userRepository);
+            var user = await Extensions.FindUser(userId, _userRepository, _cache);
             var workout = await _completedWorkoutRepository.GetNoTracking(workoutId);
             if (workout is null || userId != workout.UserId)
                 return null;
@@ -76,7 +79,7 @@ namespace TrainingPlans.Services
             var fromDate = from.ValidateDate();
             var toDate = to.ValidateDate();
 
-            var user = await Extensions.FindUser(userId, _userRepository);
+            var user = await Extensions.FindUser(userId, _userRepository, _cache);
             var workout = await _completedWorkoutRepository.FindByDateRange(userId, fromDate, toDate, false);
 
             var userDefaults = user.GetUserDefaultsFormatted();
